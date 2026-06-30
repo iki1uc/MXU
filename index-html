@@ -1,1 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MXU Root</title>
+  <script src="mxu.js"></script>
+  <script src="axinxa.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    MXU.init('root');      // 6er-Verwaltung, Root-View
+    AXINXA.attach(MXU);    // Achsen-Logik an MXU koppeln
+  </script>
+</body>
+</html>
 
