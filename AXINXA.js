@@ -1,48 +1,29 @@
-// AXINXA.js – Achsen-Logik für MXU
-
 import { AX_forward } from "./AX/forward.js";
-import { IS_state }   from "./IS/state.js";
-import { XA_return }  from "./XA/return.js";
+import { IS_state } from "./IS/state.js";
+import { XA_return } from "./XA/return.js";
+
+import { MX_move } from "./MX/mx.js";
+import { UX_move } from "./UX/ux.js";
+import { IU_move } from "./IU/iu.js";
 
 export const AXINXA = {
 
-  // MXU ankoppeln
-  attach(mxu) {
-    console.log("AXINXA → an MXU gekoppelt");
-    this.mxu = mxu;
+    attach(mxu) {
+        console.log("AXINXA → an MXU gekoppelt");
+        this.mxu = mxu;
+        this.runAll();
+        this.runNew();
+    },
 
-    // optional Flag
-    if (this.mxu) {
-      this.mxu._axisAttached = true;
+    runAll() {
+        console.log("AX:", AX_forward());
+        console.log("IS:", IS_state());
+        console.log("XA:", XA_return());
+    },
+
+    runNew() {
+        console.log("MX:", MX_move());
+        console.log("UX:", UX_move());
+        console.log("IU:", IU_move());
     }
-
-    // Direkt einmal Achsen fahren
-    this.runAll();
-  },
-
-  // alle drei Moves einmal durchfahren
-  runAll() {
-    const ax = AX_forward();
-    const is = IS_state();
-    const xa = XA_return();
-
-    console.log("AXINXA → Ergebnisse:", { ax, is, xa });
-  },
-
-  // einzelne Achsen, falls du sie getrennt triggern willst
-  runAX() {
-    const ax = AX_forward();
-    console.log("AXINXA → AX:", ax);
-  },
-
-  runIS() {
-    const is = IS_state();
-    console.log("AXINXA → IS:", is);
-  },
-
-  runXA() {
-    const xa = XA_return();
-    console.log("AXINXA → XA:", xa);
-  }
 };
-
