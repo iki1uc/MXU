@@ -1,10 +1,9 @@
-export function UX_move() {
-    console.log("UX → move()");
+export function IU_move() {
+    console.log("IU → move()");
     return {
-        id: "UX",
+        id: "IU",
         type: "move",
         status: "OK",
-        info: "UX → Move erfolgreich ausgeführt"
+        info: "IU → Move erfolgreich ausgeführt"
     };
 }
-
