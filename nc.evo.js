@@ -1,4 +1,3 @@
-// nc.evo.js
 export function evoImprove(history) {
   const last = history[history.length - 1];
 
@@ -24,4 +23,3 @@ export function evoImprove(history) {
     basedOn: last
   };
 }
-
