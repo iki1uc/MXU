@@ -1,1 +1,5 @@
+ghost-signal
+ghost-none
+ghost-soft
+ghost-hard
 
