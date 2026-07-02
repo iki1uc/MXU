@@ -1,1 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PX Console</title>
+</head>
+
+<body>
+
+<h1>PX Console</h1>
+<input id="txt" placeholder="PX Input">
+<button id="run">RUN PX</button>
+<pre id="out"></pre>
+
+<script type="module">
+  import { fromPX } from "./mxu.js";
+
+  document.getElementById("run").addEventListener("click", async () => {
+    const msg = document.getElementById("txt").value || "PX TEST";
+    const out = await fromPX({ msg });
+    document.getElementById("out").textContent =
+      JSON.stringify(out, null, 2);
+  });
+</script>
+
+</body>
+</html>
 
