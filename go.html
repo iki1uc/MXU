@@ -1,3 +1,22 @@
-<div id="inst-root"  data-gate="gate-root"  data-beam="bp-1"></div>
-<div id="inst-axis"  data-gate="gate-axis"  data-beam="bp-2"></div>
-<div id="inst-room"  data-gate="gate-room"  data-beam="bp-3"></div>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MXU GO</title>
+</head>
+
+<body>
+
+<h1>MXU GO</h1>
+<div id="channel"></div>
+
+<script type="module">
+  import * as MXU from "./mxu.js";
+  import { AXINXA } from "./AXINXA.js";
+
+  MXU.channel("channel");
+  AXINXA.attach(MXU);
+</script>
+
+</body>
+</html>
