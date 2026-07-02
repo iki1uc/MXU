@@ -1,1 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MXU Beam/Gate</title>
+</head>
+
+<body>
+
+<h1>MXU Beam/Gate</h1>
+
+<div id="inst-root"  data-gate="gate-root"  data-beam="bp-1"></div>
+<div id="inst-axis"  data-gate="gate-axis"  data-beam="bp-2"></div>
+<div id="inst-room"  data-gate="gate-room"  data-beam="bp-3"></div>
+
+<script type="module">
+  import * as MXU from "./mxu.js";
+
+  document.getElementById("inst-root").textContent = "ROOT ACTIVE";
+  document.getElementById("inst-axis").textContent = "AXIS ACTIVE";
+  document.getElementById("inst-room").textContent = "ROOM ACTIVE";
+
+  MXU.channel("inst-root");
+</script>
+
+</body>
+</html>
 
