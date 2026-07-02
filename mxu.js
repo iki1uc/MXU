@@ -1,30 +1,22 @@
-import { processTXT } from "./respo.js";
-import { evoImprove } from "./nc.evo.js";
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MXU Channel</title>
+</head>
 
-let evoHistory = [];
+<body>
 
-export function fromPX(txt) {
-  const respoOut = processTXT(txt);
+<h1>MXU CHANNEL</h1>
+<div id="channel"></div>
 
-  const evoItem = {
-    in: txt,
-    respo: respoOut,
-    time: Date.now()
-  };
+<script type="module">
+  import * as MXU from "./mxu.js";
+  import { AXINXA } from "./AXINXA.js";
 
-  evoHistory.push(evoItem);
+  MXU.channel("channel");
+  AXINXA.attach(MXU);
+</script>
 
-  const evoOut = evoImprove(evoHistory);
-
-  return {
-    status: "OK",
-    last: evoItem,
-    evo: evoOut,
-    evoCount: evoHistory.length
-  };
-}
-
-export function channel(id) {
-  const el = document.getElementById(id);
-  el.innerHTML = "MXU CHANNEL ACTIVE";
-}
+</body>
+</html>
