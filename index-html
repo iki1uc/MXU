@@ -1,66 +1,15 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <title>MXU · SYNCH</title>
-  <style>
-    body {
-      background: #0f0f0f;
-      color: #e0e0e0;
-      font-family: Arial, sans-serif;
-      padding: 40px;
-    }
-    h1 {
-      font-size: 32px;
-      color: #4af;
-      margin-bottom: 10px;
-    }
-    p {
-      margin-bottom: 20px;
-      font-size: 16px;
-      color: #ccc;
-    }
-    #run {
-      padding: 12px 22px;
-      background: #4af;
-      border: none;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 6px;
-    }
-    #out {
-      margin-top: 30px;
-      padding: 20px;
-      background: #1a1a1a;
-      border-radius: 6px;
-      white-space: pre-wrap;
-      font-size: 14px;
-    }
-  </style>
-</head>
+<script type="module">
+  import * as MXU from "./mxu.js";
 
-<body>
+  // PX sendet TXT hier rein
+  function onTXT(txt) {
+    const out = MXU.fromPX(txt);
+    document.getElementById("out").textContent =
+      JSON.stringify(out, null, 2);
+  }
 
-  <h1>MXU · SYNCH</h1>
-  <p>PX‑Pipeline kann hier landen:<br>
-     PX → Copilot → API → TXT → PC → RESPO → API → MXU → User</p>
-
-  <button id="run">SYNCH TEST</button>
-  <pre id="out"></pre>
-
-  <script type="module">
-    import * as MXU from "./mxu.js";
-
-    document.getElementById("run").addEventListener("click", () => {
-      const out = {
-        pipeline: "PX → Copilot → API → TXT → PC → RESPO → API → MXU → User",
-        mxu: MXU.info ? MXU.info() : "MXU.info() nicht gefunden"
-      };
-      document.getElementById("out").textContent =
-        JSON.stringify(out, null, 2);
-    });
-  </script>
-
-</body>
-</html>
+  // TESTBUTTON
+  document.getElementById("run").addEventListener("click", () => {
+    onTXT({ msg: "PX TEST" });
+  });
+</script>
