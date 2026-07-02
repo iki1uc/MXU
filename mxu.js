@@ -1,4 +1,3 @@
-// mxu.js
 import { processTXT } from "./respo.js";
 import { evoImprove } from "./nc.evo.js";
 
@@ -23,4 +22,9 @@ export function fromPX(txt) {
     evo: evoOut,
     evoCount: evoHistory.length
   };
+}
+
+export function channel(id) {
+  const el = document.getElementById(id);
+  el.innerHTML = "MXU CHANNEL ACTIVE";
 }
