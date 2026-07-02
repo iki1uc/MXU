@@ -1,1 +1,5 @@
+7sinn-ready
+7sinn-none
+7sinn-deep
+7sinn-lite
 
