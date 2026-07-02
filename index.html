@@ -1,35 +1,28 @@
-iki1uc
-MXU
-Repository navigation
-Code
-Issues
-Pull requests
-Agents
-Actions
-Projects
-Wiki
-Security and quality
-Insights
-Settings
-Files
-Go to file
-t
-T
-AX
-forward.js
-IS
-state.js
-IU
-iu.js
-MX
-mx.js
-UX
-ux.js
-XA
-return.js
-AXINXA.js
-ch.html
-go.html
-index-html
-mxu.js
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>MXU · SYNCH</title>
+</head>
+<body>
 
+  <h1>MXU · SYNCH</h1>
+  <button id="run">PX → RESPO → MXU</button>
+  <pre id="out"></pre>
+
+  <script type="module">
+    import * as MXU from "./mxu.js";
+
+    function onTXT(txt) {
+      const out = MXU.fromPX(txt);
+      document.getElementById("out").textContent =
+        JSON.stringify(out, null, 2);
+    }
+
+    document.getElementById("run").addEventListener("click", () => {
+      onTXT({ msg: "PX TEST" });
+    });
+  </script>
+
+</body>
+</html>
