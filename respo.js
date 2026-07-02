@@ -1,8 +1,16 @@
-export function process(txt) {
+// respo.js
+export function processTXT(txt) {
+  const msg = txt.msg || "";
+
   return {
-    received: txt,
-    status: "RESPO OK",
-    time: Date.now()
+    raw: txt,
+    msg,
+    tokens: msg.split(/\s+/),
+    meta: {
+      hasPX: msg.toLowerCase().includes("px"),
+      hasQuestion: msg.includes("?"),
+      ghost: msg.length > 12 ? "ghost-signal" : "none",
+      sinn: msg.split(" ").length >= 3 ? "7sinn-ready" : "low"
+    }
   };
 }
-
