@@ -1,10 +1,21 @@
-<script type="module">
-  import { fromPX } from "./mxu.js";
+<pre id="mxu"></pre>
 
-  document.getElementById("run").addEventListener("click", async () => {
-    const msg = document.getElementById("txt").value || "PX TEST";
-    const out = await fromPX({ msg });
-    document.getElementById("out").textContent =
-      JSON.stringify(out, null, 2);
-  });
+<script type="module">
+  import { MXU } from "./mxu.js";
+  import { AXINXA } from "./AXINXA.js";
+  import { NC } from "./nc.evo.js";
+  import { RESPO } from "./respo.js";
+
+  function render(){
+    const out =
+      "MXU :: ROOT\n-------------------------\n" +
+      MXU() + "\n" +
+      AXINXA() + "\n" +
+      NC() + "\n" +
+      RESPO();
+
+    document.getElementById("mxu").textContent = out;
+  }
+
+  render();
 </script>
