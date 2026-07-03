@@ -1,19 +1,17 @@
-// MXU v1 — Stable Minimal Mode
-// Keine Moves, kein Drift, kein OLDUC, kein Sensibel
+// MXU.js — REAL WORKING VERSION for GitHub Pages
+// Keine Abhängigkeiten, keine Moves, kein Drift, kein OLDUC
 
 export async function fromPX(input) {
-    const msg = input.msg || "";
+    // PX Input abholen
+    const msg = (input && input.msg) ? String(input.msg) : "";
 
-    // Anti-Sensibel: immer gültiger Text
-    const safeMsg = String(msg);
-
-    // Stabiler MXU-Output
+    // Immer gültiger Output
     return {
-        ok: true,               // MXU zeigt nie 0
-        px: safeMsg,            // PX Input
-        len: safeMsg.length,    // immer > 0
-        time: Date.now(),       // immer gültig
-        mxu: "stable",          // MXU driftet nicht
-        move: "NONE"            // KEIN Move-Wechsel
+        ok: true,            // zeigt nie 0
+        input: msg,          // was du eingegeben hast
+        length: msg.length,  // immer > 0 wenn Text da ist
+        time: Date.now(),    // immer gültig
+        mxu: "stable",       // MXU driftet nicht
+        move: "NONE"         // KEIN Move-Wechsel
     };
 }
