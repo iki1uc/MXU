@@ -1,27 +1,30 @@
+## PIPELINE
+Die vollständige MXU‑Pipeline lautet:
+
 
 ### PX (Receiver‑Ebene)
-- Eingangsschicht für **index.html**, **go.html**, **ch.html**
-- nimmt Rohdaten, Räume, Achsen und Zustände entgegen
-- bildet die Start‑Instanz für alle MXU‑Moves
+- nimmt Daten aus **index.html**, **go.html**, **ch.html** entgegen  
+- bildet die Start‑Instanz für Räume, Achsen und Zustände  
+- erzeugt das Roh‑PX‑Signal für die Pipeline
 
 ### respo (Text‑Analyse)
-- Filtert, normalisiert und segmentiert Eingaben
-- erzeugt PX‑kompatible Datenpakete
-- bildet die Vorstufe für EVO‑Analyse
+- filtert, segmentiert und normalisiert Eingaben  
+- erzeugt PX‑kompatible Datenpakete  
+- bildet die Vorstufe für EVO‑Frames
 
 ### evo (EVO‑Analyse)
-- erkennt Muster, Struktur, Achsen‑Bezüge
-- bereitet Daten für AXINXA vor
+- erkennt Muster, Struktur und Achsen‑Bezüge  
+- bereitet Daten für AXINXA vor  
 - erzeugt stabile EVO‑Frames
 
 ### AXINXA (Achsen + Moves)
-- trägt die Achsen **AX**, **IS**, **XA**
-- führt die Moves **MX**, **UX**, **IU** aus
+- trägt die Achsen **AX**, **IS**, **XA**  
+- führt die Moves **MX**, **UX**, **IU** aus  
 - bildet die technische Kernschicht des Systems
 
 ### MXU Channel (Endpunkt)
-- finaler Bewegungs‑Kanal
-- erzeugt Raum‑Instanzen (root / axis / room)
+- finaler Bewegungs‑Kanal  
+- erzeugt Raum‑Instanzen (root / axis / room)  
 - bildet die neutrale Bewegungs‑Ebene des MXU‑Systems
 
 ### Eigenschaften der Pipeline
@@ -30,4 +33,4 @@
 - Root‑gebunden  
 - ohne Autonomie  
 - ohne Systemgefahr  
-- kompatibel mit **[MXU‑CORE](ca://s?q=MXU_CORE_erklären)**  
+- kompatibel mit **MXU‑CORE**  
