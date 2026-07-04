@@ -34,3 +34,8 @@ Die vollständige MXU‑Pipeline lautet:
 - ohne Autonomie  
 - ohne Systemgefahr  
 - kompatibel mit **MXU‑CORE**
+Die vollständige MXU‑Pipeline lautet:
+## PIPELINE
+Die vollständige MXU‑Pipeline lautet:
+
+PX → respo → evo → AXINXA → MXU Channel
