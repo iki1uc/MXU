@@ -1,37 +1,33 @@
-# MXU Root System
 
-## PURPOSE
-MXU ist das Multi‑X‑Unit‑System.  
-Es bildet die technische Grundebene für Achsen, Moves, Räume und PX‑Pipelines.
+### PX (Receiver‑Ebene)
+- Eingangsschicht für **index.html**, **go.html**, **ch.html**
+- nimmt Rohdaten, Räume, Achsen und Zustände entgegen
+- bildet die Start‑Instanz für alle MXU‑Moves
 
-MXU trägt die Achsen:
-- **AX**
-- **IS**
-- **XA**
+### respo (Text‑Analyse)
+- Filtert, normalisiert und segmentiert Eingaben
+- erzeugt PX‑kompatible Datenpakete
+- bildet die Vorstufe für EVO‑Analyse
 
-und die Moves:
-- **MX**
-- **UX**
-- **IU**
+### evo (EVO‑Analyse)
+- erkennt Muster, Struktur, Achsen‑Bezüge
+- bereitet Daten für AXINXA vor
+- erzeugt stabile EVO‑Frames
 
-MXU ist die neutrale Bewegungs‑Ebene des Systems.
+### AXINXA (Achsen + Moves)
+- trägt die Achsen **AX**, **IS**, **XA**
+- führt die Moves **MX**, **UX**, **IU** aus
+- bildet die technische Kernschicht des Systems
 
----
+### MXU Channel (Endpunkt)
+- finaler Bewegungs‑Kanal
+- erzeugt Raum‑Instanzen (root / axis / room)
+- bildet die neutrale Bewegungs‑Ebene des MXU‑Systems
 
-## FILES (Root‑Ebene)
-Alle Dateien müssen exakt im Root liegen (GitHub Pages ist case‑sensitive):
-
-- **index.html** → PX Receiver  
-- **go.html** → AXINXA + MXU Channel  
-- **ch.html** → Instanzen (root / axis / room)  
-- **mxu.js** → PX Pipeline  
-- **AXINXA.js** → Achsen + Moves  
-- **respo.js** → Text‑Analyse  
-- **nc.evo.js** → EVO‑Analyse  
-
----
-
-## PIPELINE
-Die vollständige MXU‑Pipeline lautet:
-
-
+### Eigenschaften der Pipeline
+- vollständig neutral  
+- case‑sensitive  
+- Root‑gebunden  
+- ohne Autonomie  
+- ohne Systemgefahr  
+- kompatibel mit **[MXU‑CORE](ca://s?q=MXU_CORE_erklären)**  
