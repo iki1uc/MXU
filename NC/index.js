@@ -21,4 +21,3 @@ export function NC(px, meta, history = []) {
         info: "NC → vollständige NC-Ausführung"
     };
 }
-
