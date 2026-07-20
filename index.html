@@ -3,12 +3,6 @@ import { AXINXA } from "./AXINXA.js";
 import { RESPO } from "./respo.js";
 import { NC } from "./NC/index.js";
 
-import { NC_listRoom } from "./NC/list.room";
-import { NC_runRoom } from "./NC/run.room";
-
-import { RESPO_listRoom } from "./respo.list.room";
-import { RESPO_runRoom } from "./respo.run.room";
-
 export function MXU_fullSync(packet = {}) {
 
     const time = Date.now();
@@ -26,22 +20,21 @@ export function MXU_fullSync(packet = {}) {
         NEW: AXINXA.runNew()
     };
 
-    // NC (voller NC‑Block)
+    // NC
     const nc = NC(px, meta);
 
-    // NC Räume
-    const ncRooms = {
-        list: NC_listRoom(),
-        run: NC_runRoom(px, meta)
+    // Erweiterte Debug‑Infos
+    const debug = {
+        pxType: typeof px,
+        metaType: typeof meta,
+        axisType: typeof axis,
+        ncType: typeof nc,
+        pxKeys: Object.keys(px || {}),
+        metaKeys: Object.keys(meta || {}),
+        axisKeys: Object.keys(axis || {}),
+        ncKeys: Object.keys(nc || {})
     };
 
-    // RESPO Räume
-    const respoRooms = {
-        list: RESPO_listRoom(),
-        run: RESPO_runRoom(px)
-    };
-
-    // Erweiterter Sync‑Block
     return {
         sync: true,
         stable: true,
@@ -53,9 +46,8 @@ export function MXU_fullSync(packet = {}) {
         axis,
         nc,
 
-        ncRooms,
-        respoRooms,
+        debug,
 
-        info: "MXU_fullSync → erweiterte Synchronisation erfolgreich"
+        info: "MXU_fullSync → ERWEITERTE Synchronisation erfolgreich"
     };
 }
