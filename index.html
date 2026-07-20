@@ -1,32 +1,28 @@
-// MXU_fullSync.js — FUNKTIONIERENDE VERSION
-// Vollständige, echte Synchronisation für MXU
-
 import { processTXT } from "./txt/raw.txt";
 import { AXINXA } from "./AXINXA.js";
 import { RESPO } from "./respo.js";
-import { ncImprove } from "./nc.evo.js";
+import { NC } from "./NC/index.js";
 
 export function MXU_fullSync(packet = {}) {
 
     const time = Date.now();
     const msg = String(packet.msg || "");
 
-    // 1) PX → Tokens extrahieren
+    // PX
     const px = processTXT({ msg });
 
-    // 2) RESPO → Meta-Daten stabilisieren
+    // RESPO
     const meta = RESPO(px);
 
-    // 3) AXINXA → Achsen synchronisieren (NEU: Rückgabe!)
+    // AXINXA
     const axis = {
-        AX: AXINXA.runAll?.() || "AXINXA: no return",
-        NEW: AXINXA.runNew?.() || "AXINXA: no return"
+        AX: AXINXA.runAll(),
+        NEW: AXINXA.runNew()
     };
 
-    // 4) NC → Evolution stabilisieren
-    const evo = ncImprove([{ respo: meta, px }]);
+    // NC
+    const nc = NC(px, meta);
 
-    // 5) Finaler Sync-Block
     return {
         sync: true,
         stable: true,
@@ -35,7 +31,7 @@ export function MXU_fullSync(packet = {}) {
         px,
         meta,
         axis,
-        evo,
+        nc,
         info: "MXU_fullSync → vollständige Synchronisation erfolgreich"
     };
 }
