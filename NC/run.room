@@ -1,1 +1,20 @@
 
+// NC/run.room — führt einen Raum aus
+
+import { NC } from "./index.js";
+
+export function NC_runRoom(px, meta) {
+    const nc = NC(px, meta);
+
+    return {
+        type: "NC-run",
+        time: Date.now(),
+        executed: {
+            raw: nc.raw,
+            tokens: nc.tokens,
+            meta: nc.metaBlock,
+            evo: nc.evo
+        },
+        info: "NC_runRoom → Raum erfolgreich ausgeführt"
+    };
+}
