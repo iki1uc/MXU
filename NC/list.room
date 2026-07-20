@@ -1,1 +1,13 @@
+// NC/list.room — liefert eine Liste aller Räume
+
+import { NC_layers } from "./core/nc.layers.js";
+
+export function NC_listRoom() {
+    return {
+        type: "NC-list",
+        time: Date.now(),
+        rooms: NC_layers,
+        info: "NC_listRoom → Raumliste erfolgreich geladen"
+    };
+}
 
