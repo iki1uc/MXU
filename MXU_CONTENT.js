@@ -1,6 +1,4 @@
 // MXU_CONTENT.js
-// Füllt ECO‑Module mit Systemtreue + PX + NC + AX Daten
-
 export const MXU_CONTENT = (() => {
 
     const templates = {
