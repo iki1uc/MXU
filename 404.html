@@ -1,0 +1,52 @@
+<script>
+// 9 Räume definieren
+const ROOMS = [
+    "INDEX.html",
+    "DOM/DOM.html",
+    "MARKT/markt.html",
+    "BOERSE/boerse.html",
+    "EVO/EVO.html",
+    "EOS/EOS.html",
+    "funktion/funktion.html",
+    "respo/respo.html",
+    "tool48/pyramide.html"
+];
+
+// Raum-Check Funktion
+async function checkRoom(path) {
+    try {
+        const res = await fetch(path, { method: "HEAD" });
+        return res.ok ? "OK" : "MISS";
+    } catch {
+        return "FAIL";
+    }
+}
+
+// Beam‑Point / Achse / Ursache / Wirkung / Horizont
+function ecoDiagnose(status, room) {
+    return {
+        room,
+        status,
+        beamPoint: status === "OK" ? 1 : status === "MISS" ? 2 : 9,
+        achse: status === "OK" ? "X" : status === "MISS" ? "Δ" : "Ø",
+        ursache: status === "OK" ? "Vorhanden" : status === "MISS" ? "Pfad falsch" : "Nicht existent",
+        wirkung: status === "OK" ? "Normal" : status === "MISS" ? "Umleitung" : "Abbruch",
+        horizont: status === "OK" ? "0" : status === "MISS" ? "1" : "9"
+    };
+}
+
+// Hauptlauf
+(async () => {
+    const results = [];
+
+    for (const room of ROOMS) {
+        const status = await checkRoom("../" + room);
+        results.push(ecoDiagnose(status, room));
+    }
+
+    document.getElementById("eco404").innerHTML =
+        JSON.stringify(results, null, 2);
+})();
+</script>
+
+<pre id="eco404">ECO 404 – Lade Diagnose…</pre>
