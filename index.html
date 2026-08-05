@@ -1,7 +1,8 @@
+// MXU_fullSync.js
 import { processTXT } from "./txt/raw.txt";
 import { AXINXA } from "./AXINXA.js";
-import { RESPO } from "./respo.js";
 import { NC } from "./NC/index.js";
+import { MXU_TREUE } from "./MXU_TREUE.js";
 
 export function MXU_fullSync(packet = {}) {
 
@@ -11,8 +12,13 @@ export function MXU_fullSync(packet = {}) {
     // PX
     const px = processTXT({ msg });
 
-    // RESPO
-    const meta = RESPO(px);
+    // META (RESPO entfernt)
+    const meta = {
+        origin: "MXU",
+        msg,
+        pxType: typeof px,
+        time
+    };
 
     // AXINXA
     const axis = {
@@ -23,21 +29,18 @@ export function MXU_fullSync(packet = {}) {
     // NC
     const nc = NC(px, meta);
 
-    // Erweiterte Debug‑Infos
-    const debug = {
-        pxType: typeof px,
-        metaType: typeof meta,
-        axisType: typeof axis,
-        ncType: typeof nc,
-        pxKeys: Object.keys(px || {}),
-        metaKeys: Object.keys(meta || {}),
-        axisKeys: Object.keys(axis || {}),
-        ncKeys: Object.keys(nc || {})
-    };
+    // Treue-Bewertung
+    const treue = MXU_TREUE.accept({
+        input: msg,
+        px,
+        meta,
+        axis,
+        nc
+    });
 
     return {
         sync: true,
-        stable: true,
+        stable: treue.status === "OK",
         time,
         input: msg,
 
@@ -46,8 +49,8 @@ export function MXU_fullSync(packet = {}) {
         axis,
         nc,
 
-        debug,
+        treue,
 
-        info: "MXU_fullSync → ERWEITERTE Synchronisation erfolgreich"
+        info: "MXU_fullSync → Synchronisation + Systemtreue aktiv"
     };
 }
