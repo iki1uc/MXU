@@ -1,56 +1,111 @@
-// MXU_fullSync.js
-import { processTXT } from "./txt/raw.txt";
-import { AXINXA } from "./AXINXA.js";
-import { NC } from "./NC/index.js";
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>MXU · Kernstation · INDEX</title>
+
+<style>
+  body { background:#000; color:#0f0; font-family:Consolas, monospace; padding:40px; }
+  h1 { color:#6cf; text-align:center; margin-bottom:30px; }
+  .box { background:#111; border:1px solid #333; padding:20px; margin-bottom:25px; }
+  .nav a { color:#6cf; display:block; margin:6px 0; }
+  pre { background:#000; padding:12px; border-left:3px solid #6cf; }
+</style>
+</head>
+
+<body>
+
+<h1>MXU · Kernstation</h1>
+
+<!-- Navigation -->
+<div class="box nav">
+  <h2>Module</h2>
+  <a href="./ATOM.html">ATOM</a>
+  <a href="./DOM.html">DOM</a>
+  <a href="./EVO.html">EVO</a>
+  <a href="./EOS.html">EOS</a>
+  <a href="./markt.html">MARKT</a>
+  <a href="./boerse.html">BOERSE</a>
+  <a href="./funktion.html">FUNKTION</a>
+  <a href="./respo.html">RESPO</a>
+  <a href="./pyramide.html">PYRAMIDE</a>
+  <a href="./self.html">SELF</a>
+  <a href="./toolomatter.html">TOOLOMATTER</a>
+</div>
+
+<!-- Systemtreue -->
+<div class="box">
+  <h2>Systemtreue</h2>
+  <pre id="treue"></pre>
+</div>
+
+<!-- MXU FullSync Output -->
+<div class="box">
+  <h2>MXU_fullSync Output</h2>
+  <pre id="sync"></pre>
+</div>
+
+<!-- AXINXA -->
+<div class="box">
+  <h2>AXINXA</h2>
+  <pre id="axis"></pre>
+</div>
+
+<!-- NC -->
+<div class="box">
+  <h2>NC</h2>
+  <pre id="nc"></pre>
+</div>
+
+<!-- TXT -->
+<div class="box">
+  <h2>TXT RAW → PX</h2>
+  <pre id="px"></pre>
+</div>
+
+<!-- MXU Layers -->
+<div class="box">
+  <h2>MXU Layers</h2>
+  <pre id="layers"></pre>
+</div>
+
+<script type="module">
+import { MXU_fullSync } from "./MXU_fullSync.js";
 import { MXU_TREUE } from "./MXU_TREUE.js";
+import { AXINXA } from "./AXINXA.js";
+import { NC } from "./NC/nc.js";
+import { MXU_layers } from "./MXU_layers.js";
+import { processTXT } from "./txt/raw.txt";
 
-export function MXU_fullSync(packet = {}) {
+function update() {
 
-    const time = Date.now();
-    const msg = String(packet.msg || "");
+    const msg = "INDEX-BOOT";
+    const sync = MXU_fullSync({ msg });
 
-    // PX
+    document.getElementById("treue").textContent =
+        JSON.stringify(MXU_TREUE.getTreue(), null, 2);
+
+    document.getElementById("sync").textContent =
+        JSON.stringify(sync, null, 2);
+
+    document.getElementById("axis").textContent =
+        JSON.stringify(AXINXA.runAll(), null, 2);
+
     const px = processTXT({ msg });
+    document.getElementById("px").textContent =
+        JSON.stringify(px, null, 2);
 
-    // META (RESPO entfernt)
-    const meta = {
-        origin: "MXU",
-        msg,
-        pxType: typeof px,
-        time
-    };
+    const nc = NC(px, { origin: "INDEX" });
+    document.getElementById("nc").textContent =
+        JSON.stringify(nc, null, 2);
 
-    // AXINXA
-    const axis = {
-        AX: AXINXA.runAll(),
-        NEW: AXINXA.runNew()
-    };
-
-    // NC
-    const nc = NC(px, meta);
-
-    // Treue-Bewertung
-    const treue = MXU_TREUE.accept({
-        input: msg,
-        px,
-        meta,
-        axis,
-        nc
-    });
-
-    return {
-        sync: true,
-        stable: treue.status === "OK",
-        time,
-        input: msg,
-
-        px,
-        meta,
-        axis,
-        nc,
-
-        treue,
-
-        info: "MXU_fullSync → Synchronisation + Systemtreue aktiv"
-    };
+    document.getElementById("layers").textContent =
+        JSON.stringify(MXU_layers, null, 2);
 }
+
+setInterval(update, 500);
+update();
+</script>
+
+</body>
+</html>
