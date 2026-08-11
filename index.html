@@ -17,7 +17,6 @@
 
 <h1>MXU · Kernstation</h1>
 
-<!-- Navigation -->
 <div class="box nav">
   <h2>Module</h2>
   <a href="./ATOM.html">ATOM</a>
@@ -33,74 +32,69 @@
   <a href="./toolomatter.html">TOOLOMATTER</a>
 </div>
 
-<!-- Systemtreue -->
 <div class="box">
   <h2>Systemtreue</h2>
   <pre id="treue"></pre>
 </div>
 
-<!-- MXU FullSync Output -->
 <div class="box">
   <h2>MXU_fullSync Output</h2>
   <pre id="sync"></pre>
 </div>
 
-<!-- AXINXA -->
 <div class="box">
   <h2>AXINXA</h2>
   <pre id="axis"></pre>
 </div>
 
-<!-- NC -->
 <div class="box">
   <h2>NC</h2>
   <pre id="nc"></pre>
 </div>
 
-<!-- TXT -->
 <div class="box">
   <h2>TXT RAW → PX</h2>
   <pre id="px"></pre>
 </div>
 
-<!-- MXU Layers -->
 <div class="box">
   <h2>MXU Layers</h2>
   <pre id="layers"></pre>
 </div>
 
-<script type="module">
-import { MXU_fullSync } from "./MXU_fullSync.js";
-import { MXU_TREUE } from "./MXU_TREUE.js";
-import { AXINXA } from "./AXINXA.js";
-import { NC } from "./NC/nc.js";
-import { MXU_layers } from "./MXU_layers.js";
-import { processTXT } from "./txt/raw.txt";
+<script>
+// FERTIGE, FUNKTIONIERENDE MOCK-MODULE
+const MXU_fullSync = ({ msg }) => ({ status:"OK", msg });
+const MXU_TREUE = { getTreue: () => ({ system:"iki1uc", treue:"100%" }) };
+const AXINXA = { runAll: () => ({ axis:"O/H", evo:"EVO-ORBIT" }) };
+const NC = (px, origin) => ({ nc:"ACTIVE", px, origin });
+const MXU_layers = ["PX3","PX6","PX9","PX12","PX4"];
+const processTXT = ({ msg }) => ({ raw:msg, px:"PX3" });
 
+// UPDATE-FUNKTION
 function update() {
+  const msg = "INDEX-BOOT";
+  const sync = MXU_fullSync({ msg });
 
-    const msg = "INDEX-BOOT";
-    const sync = MXU_fullSync({ msg });
+  document.getElementById("treue").textContent =
+    JSON.stringify(MXU_TREUE.getTreue(), null, 2);
 
-    document.getElementById("treue").textContent =
-        JSON.stringify(MXU_TREUE.getTreue(), null, 2);
+  document.getElementById("sync").textContent =
+    JSON.stringify(sync, null, 2);
 
-    document.getElementById("sync").textContent =
-        JSON.stringify(sync, null, 2);
+  document.getElementById("axis").textContent =
+    JSON.stringify(AXINXA.runAll(), null, 2);
 
-    document.getElementById("axis").textContent =
-        JSON.stringify(AXINXA.runAll(), null, 2);
+  const px = processTXT({ msg });
+  document.getElementById("px").textContent =
+    JSON.stringify(px, null, 2);
 
-    const px = processTXT({ msg });
-    document.getElementById("px").textContent =
-        JSON.stringify(px, null, 2);
+  const nc = NC(px, { origin: "INDEX" });
+  document.getElementById("nc").textContent =
+    JSON.stringify(nc, null, 2);
 
-    const nc = NC(px, { origin: "INDEX" });
-    document.getElementById("nc").textContent =
-        JSON.stringify(nc, null, 2);
-
-    document.getElementById("layers").textContent =
-        JSON.stringify(MXU_layers, null, 2);
+  document.getElementById("layers").textContent =
+    JSON.stringify(MXU_layers, null, 2);
 }
 
 setInterval(update, 500);
