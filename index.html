@@ -2,104 +2,759 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>MXU · Kernstation · INDEX</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MXU · KERNSTATION · 4u · SYS · TEM · NC</title>
 
 <style>
-  body { background:#000; color:#0f0; font-family:Consolas, monospace; padding:40px; }
-  h1 { color:#6cf; text-align:center; margin-bottom:30px; }
-  .box { background:#111; border:1px solid #333; padding:20px; margin-bottom:25px; }
-  .nav a { color:#6cf; display:block; margin:6px 0; }
-  pre { background:#000; padding:12px; border-left:3px solid #6cf; }
-</style>
-</head>
-
-<body>
-
-<h1>MXU · Kernstation</h1>
-
-<div class="box nav">
-  <h2>Module</h2>
-  <a href="./ATOM.html">ATOM</a>
-  <a href="./DOM.html">DOM</a>
-  <a href="./EVO.html">EVO</a>
-  <a href="./EOS.html">EOS</a>
-  <a href="./markt.html">MARKT</a>
-  <a href="./boerse.html">BOERSE</a>
-  <a href="./funktion.html">FUNKTION</a>
-  <a href="./respo.html">RESPO</a>
-  <a href="./pyramide.html">PYRAMIDE</a>
-  <a href="./self.html">SELF</a>
-  <a href="./toolomatter.html">TOOLOMATTER</a>
-</div>
-
-<div class="box">
-  <h2>Systemtreue</h2>
-  <pre id="treue"></pre>
-</div>
-
-<div class="box">
-  <h2>MXU_fullSync Output</h2>
-  <pre id="sync"></pre>
-</div>
-
-<div class="box">
-  <h2>AXINXA</h2>
-  <pre id="axis"></pre>
-</div>
-
-<div class="box">
-  <h2>NC</h2>
-  <pre id="nc"></pre>
-</div>
-
-<div class="box">
-  <h2>TXT RAW → PX</h2>
-  <pre id="px"></pre>
-</div>
-
-<div class="box">
-  <h2>MXU Layers</h2>
-  <pre id="layers"></pre>
-</div>
-
-<script>
-// FERTIGE, FUNKTIONIERENDE MOCK-MODULE
-const MXU_fullSync = ({ msg }) => ({ status:"OK", msg });
-const MXU_TREUE = { getTreue: () => ({ system:"iki1uc", treue:"100%" }) };
-const AXINXA = { runAll: () => ({ axis:"O/H", evo:"EVO-ORBIT" }) };
-const NC = (px, origin) => ({ nc:"ACTIVE", px, origin });
-const MXU_layers = ["PX3","PX6","PX9","PX12","PX4"];
-const processTXT = ({ msg }) => ({ raw:msg, px:"PX3" });
-
-// UPDATE-FUNKTION
-function update() {
-  const msg = "INDEX-BOOT";
-  const sync = MXU_fullSync({ msg });
-
-  document.getElementById("treue").textContent =
-    JSON.stringify(MXU_TREUE.getTreue(), null, 2);
-
-  document.getElementById("sync").textContent =
-    JSON.stringify(sync, null, 2);
-
-  document.getElementById("axis").textContent =
-    JSON.stringify(AXINXA.runAll(), null, 2);
-
-  const px = processTXT({ msg });
-  document.getElementById("px").textContent =
-    JSON.stringify(px, null, 2);
-
-  const nc = NC(px, { origin: "INDEX" });
-  document.getElementById("nc").textContent =
-    JSON.stringify(nc, null, 2);
-
-  document.getElementById("layers").textContent =
-    JSON.stringify(MXU_layers, null, 2);
+:root {
+    --bg: #0a0a12;
+    --fg: #0f0;
+    --gold: #ffd700;
+    --mxu: #ff6b6b;
+    --nc: #6b6bff;
+    --treue: #4f4;
+    --px: #ffd93d;
+    --axis: #ff44ff;
+    --4u: #6cf;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Consolas', monospace;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 6px;
+    padding: 10px;
+    overflow: hidden;
 }
 
-setInterval(update, 500);
-update();
-</script>
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+header h1 {
+    font-size: 16px;
+    color: var(--gold);
+    letter-spacing: 3px;
+}
+header h1 .mxu { color: var(--mxu); }
+header h1 .four { color: var(--4u); }
+header h1 .sys { color: var(--nc); }
+#info-bar { font-size: 9px; color: #666; display: flex; gap: 8px; align-items: center; }
 
+main {
+    display: grid;
+    grid-template-columns: 3fr 1.2fr;
+    gap: 6px;
+    height: 100%;
+    min-height: 0;
+}
+
+#canvas-wrap {
+    background: #0a0a0f;
+    border: 1px solid #1a1a2a;
+    border-radius: 10px;
+    padding: 6px;
+    position: relative;
+    overflow: hidden;
+}
+#canvas-wrap canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    display: block;
+}
+#canvas-overlay {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 7px;
+    color: #444;
+    pointer-events: none;
+    background: rgba(0,0,0,0.7);
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+#canvas-overlay .open { color: var(--4u); }
+
+#panel {
+    background: #0a0a0f;
+    border: 1px solid #1a1a2a;
+    border-radius: 10px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    overflow-y: auto;
+    max-height: 100%;
+}
+#panel h3 { font-size: 9px; color: #666; border-bottom: 1px solid #1a1a2a; padding-bottom: 3px; }
+
+#modules {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+}
+.mod {
+    background: rgba(255,255,255,0.02);
+    border-radius: 6px;
+    padding: 4px 6px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.mod:hover {
+    border-color: var(--gold);
+    background: rgba(255,215,61,0.05);
+}
+.mod .sym { font-size: 14px; display: block; }
+.mod .label { color: #666; font-size: 5px; text-transform: uppercase; letter-spacing: 1px; }
+.mod .desc { color: #444; font-size: 4px; }
+.mod.active { border-color: var(--gold); background: rgba(255,215,61,0.08); }
+
+#log {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 7px;
+    color: #6a6a8a;
+    line-height: 1.3;
+    min-height: 30px;
+    max-height: 60px;
+    background: #06060a;
+    border-radius: 4px;
+    padding: 3px 5px;
+}
+#log .entry { padding: 1px 0; border-bottom: 1px solid #0a0a12; }
+#log .time { color: #444; }
+#log .msg.mxu { color: var(--mxu); }
+#log .msg.nc { color: var(--nc); }
+#log .msg.treue { color: var(--treue); }
+#log .msg.px { color: var(--px); }
+#log .msg.four { color: var(--4u); }
+
+#metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2px;
+}
+.metric {
+    background: #0e0e1a;
+    border-radius: 3px;
+    padding: 2px 3px;
+    text-align: center;
+    border: 1px solid #1a1a2a;
+}
+.metric .label { color: #666; font-size: 5px; text-transform: uppercase; }
+.metric .value { font-size: 9px; font-weight: bold; }
+.metric.mxu .value { color: var(--mxu); }
+.metric.nc .value { color: var(--nc); }
+.metric.treue .value { color: var(--treue); }
+.metric.px .value { color: var(--px); }
+
+#controls {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+}
+button {
+    background: #111;
+    color: var(--fg);
+    border: 1px solid #333;
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 8px;
+    transition: all 0.2s;
+}
+button:hover { background: #1a1a2a; border-color: var(--gold); }
+button:active { transform: scale(0.95); }
+button.primary { border-color: var(--gold); color: var(--gold); }
+button.primary:hover { background: var(--gold); color: #000; }
+button.mxu { border-color: var(--mxu); color: var(--mxu); }
+button.mxu:hover { background: var(--mxu); color: #000; }
+button.nc { border-color: var(--nc); color: var(--nc); }
+button.nc:hover { background: var(--nc); color: #000; }
+button.treue { border-color: var(--treue); color: var(--treue); }
+button.treue:hover { background: var(--treue); color: #000; }
+button.px { border-color: var(--px); color: var(--px); }
+button.px:hover { background: var(--px); color: #000; }
+button.open { border-color: var(--4u); color: var(--4u); }
+button.open:hover { background: var(--4u); color: #000; }
+button.danger { border-color: #f44; color: #f44; }
+button.danger:hover { background: #f44; color: #000; }
+
+@media (max-width: 800px) {
+    main { grid-template-columns: 1fr; }
+    #panel { max-height: 180px; }
+    #modules { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>
+        <span class="mxu">◈ MXU</span>
+        <span style="color:#666;">·</span>
+        <span class="four">4u</span>
+        <span style="color:#666;">·</span>
+        <span class="sys">SYS</span>
+        <span style="color:#666;">·</span>
+        <span style="color:var(--gold);">KERNSTATION</span>
+    </h1>
+    <div id="info-bar">
+        <span id="clock">⏱️ --:--:--</span>
+        <span id="state-display" style="color:var(--gold);">● bereit</span>
+        <span id="cycle-display" style="color:#666;">MXU 0</span>
+    </div>
+</header>
+
+<main>
+    <div id="canvas-wrap">
+        <canvas id="mxuCanvas"></canvas>
+        <div id="canvas-overlay">
+            <span class="open">◈</span> MXU · 4u · SYS · TEM · NC · OPEN
+        </div>
+    </div>
+
+    <div id="panel">
+        <h3>◈ MXU · KERNSTATION</h3>
+
+        <div id="modules">
+            <div class="mod active" data-mod="MXU">
+                <span class="sym">◈</span>
+                <span class="label">MXU</span>
+                <span class="desc">Kernstation</span>
+            </div>
+            <div class="mod" data-mod="NC">
+                <span class="sym">◆</span>
+                <span class="label">NC</span>
+                <span class="desc">Neutral-Core</span>
+            </div>
+            <div class="mod" data-mod="4u">
+                <span class="sym">✦</span>
+                <span class="label">4u</span>
+                <span class="desc">OPEN</span>
+            </div>
+        </div>
+
+        <div id="metrics">
+            <div class="metric mxu"><div class="label">MXU</div><div class="value" id="mxu-value">●</div></div>
+            <div class="metric nc"><div class="label">NC</div><div class="value" id="nc-value">0</div></div>
+            <div class="metric treue"><div class="label">TREUE</div><div class="value" id="treue-value">100%</div></div>
+            <div class="metric px"><div class="label">PX</div><div class="value" id="px-value">0</div></div>
+        </div>
+
+        <div id="log">
+            <div class="entry"><span class="time">[INIT]</span> <span class="msg mxu">◈ MXU · KERNSTATION · 4u</span></div>
+            <div class="entry"><span class="time">[INIT]</span> <span class="msg nc">NC · Neutral-Core · aktiv</span></div>
+            <div class="entry"><span class="time">[INIT]</span> <span class="msg treue">TREUE · 100% · System stabil</span></div>
+            <div class="entry"><span class="time">[INIT]</span> <span class="msg four">✦ 4u · OPEN · Response Layer 7</span></div>
+        </div>
+
+        <div id="controls">
+            <button class="primary" id="btn-start">▶ START</button>
+            <button class="mxu" id="btn-mxu">◈ MXU</button>
+            <button class="nc" id="btn-nc">◆ NC</button>
+            <button class="treue" id="btn-treue">⚡ TREUE</button>
+            <button class="open" id="btn-4u">✦ 4u OPEN</button>
+            <button class="danger" id="btn-reset">⟲ RESET</button>
+            <button id="btn-auto">▶ AUTO</button>
+        </div>
+    </div>
+</main>
+
+<script>
+// ============================================================
+// MXU · KERNSTATION · 4u · SYS · TEM · NC
+// ============================================================
+
+// --- MXU KERN ---
+var MXU = {
+    core: 'MXU',
+    state: 'active',
+    version: '1.0',
+    layers: ['PX3', 'PX6', 'PX9', 'PX12', 'PX4']
+};
+
+// --- NC (Neutral-Core) ---
+var NC = {
+    core: 'NC',
+    state: 'active',
+    level: 1,
+    role: 'Neutral-Core',
+    axes: ['a', 'd', 'e', 'i', 'o', 'r', 's', 'w'],
+    loops: [1, 2, 3, 4, 8, 9]
+};
+
+// --- 4u · RESPONSE LAYER 7 ---
+var FOUR_U = {
+    responses: ['OK', 'NOK', 'FLOW', 'BREAK', 'ECHO', 'VOID', 'ROOT'],
+    active: 'OK',
+    desc: 'Zustimmung',
+    color: '#4f4'
+};
+
+// --- TREUE ---
+var TREUE = {
+    score: 100,
+    status: 'STABIL',
+    history: []
+};
+
+// --- PX ---
+var PX = {
+    signal: 0,
+    status: 'receiving'
+};
+
+// ============================================================
+// CANVAS SETUP
+// ============================================================
+var canvas = document.getElementById('mxuCanvas');
+var ctx = canvas.getContext('2d');
+var W, H, cx, cy, radius;
+
+function resizeCanvas() {
+    var wrap = document.getElementById('canvas-wrap');
+    var rect = wrap.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    W = canvas.width; H = canvas.height;
+    cx = W / 2; cy = H / 2;
+    radius = Math.min(W, H) * 0.38;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// ============================================================
+// STATE
+// ============================================================
+var state = {
+    running: false,
+    autoMode: false,
+    cycle: 0,
+    t: 0,
+    activeMod: 'MXU',
+    mxuCount: 0,
+    ncCount: 0,
+    fourCount: 0,
+    treueScore: 100,
+    pxSignal: 0,
+    currentResponse: 'OK'
+};
+
+// ============================================================
+// LOG
+// ============================================================
+function log(msg, type) {
+    var logDiv = document.getElementById('log');
+    var entry = document.createElement('div');
+    entry.className = 'entry';
+    var time = new Date().toLocaleTimeString();
+    var cls = type === 'mxu' ? 'mxu' : type === 'nc' ? 'nc' :
+              type === 'treue' ? 'treue' : type === 'px' ? 'px' :
+              type === 'four' ? 'four' : '';
+    entry.innerHTML = '<span class="time">[' + time + ']</span> <span class="msg ' + cls + '">' + msg + '</span>';
+    logDiv.appendChild(entry);
+    logDiv.scrollTop = logDiv.scrollHeight;
+    while (logDiv.children.length > 50) logDiv.removeChild(logDiv.firstChild);
+}
+
+// ============================================================
+// KERN-FUNKTIONEN
+// ============================================================
+
+function activateMod(key) {
+    state.activeMod = key;
+    var els = document.querySelectorAll('.mod');
+    for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        if (el.getAttribute('data-mod') === key) {
+            el.classList.add('active');
+        } else {
+            el.classList.remove('active');
+        }
+    }
+
+    switch(key) {
+        case 'MXU':
+            state.mxuCount++;
+            log('◈ MXU · Kernstation aktiv · ' + state.mxuCount, 'mxu');
+            document.getElementById('mxu-value').textContent = '●';
+            break;
+        case 'NC':
+            state.ncCount++;
+            var loop = NC.loops[state.ncCount % NC.loops.length];
+            log('◆ NC · Loop ' + loop + ' · ' + NC.axes.join(' '), 'nc');
+            document.getElementById('nc-value').textContent = state.ncCount;
+            break;
+        case '4u':
+            state.fourCount++;
+            var resp = FOUR_U.responses[state.fourCount % 7];
+            FOUR_U.active = resp;
+            state.currentResponse = resp;
+            log('✦ 4u · ' + resp + ' · ' + FOUR_U.desc, 'four');
+            document.getElementById('treue-value').textContent = state.treueScore + '%';
+            break;
+    }
+    document.getElementById('px-value').textContent = state.pxSignal;
+}
+
+function treueStep() {
+    state.treueScore = Math.min(100, state.treueScore + 1);
+    document.getElementById('treue-value').textContent = state.treueScore + '%';
+    if (state.treueScore > 80) {
+        TREUE.status = 'STABIL';
+    } else if (state.treueScore > 40) {
+        TREUE.status = 'TREU';
+    } else {
+        TREUE.status = 'INSTABIL';
+    }
+}
+
+function pxStep() {
+    state.pxSignal = (state.pxSignal + 1) % 10;
+    document.getElementById('px-value').textContent = state.pxSignal;
+}
+
+function fourOpen() {
+    var resp = FOUR_U.responses[state.fourCount % 7];
+    state.currentResponse = resp;
+    log('✦ 4u · OPEN · ' + resp, 'four');
+    FOUR_U.desc = resp === 'OK' ? 'Zustimmung' :
+                  resp === 'NOK' ? 'Ablehnung' :
+                  resp === 'FLOW' ? 'System fließt' :
+                  resp === 'BREAK' ? 'System bricht' :
+                  resp === 'ECHO' ? 'Spiegelung' :
+                  resp === 'VOID' ? 'Neutral' : 'Rückkehr';
+    document.getElementById('treue-value').textContent = state.treueScore + '%';
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+    ctx.clearRect(0, 0, W, H);
+
+    var grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, W * 0.6);
+    grad.addColorStop(0, '#0a0a1a');
+    grad.addColorStop(1, '#000');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    drawMXU();
+    drawNC();
+    draw4u();
+    drawTreue();
+
+    state.t += 0.008;
+    if (state.running) {
+        state.cycle++;
+        treueStep();
+        pxStep();
+        if (state.cycle % 20 === 0) {
+            var mods = ['MXU', 'NC', '4u'];
+            var idx = Math.floor(Math.random() * mods.length);
+            activateMod(mods[idx]);
+        }
+        document.getElementById('cycle-display').textContent = 'MXU ' + state.cycle;
+    }
+
+    requestAnimationFrame(render);
+}
+render();
+
+// ============================================================
+// ZEICHEN-FUNKTIONEN
+// ============================================================
+
+function drawMXU() {
+    var r = radius * 0.3;
+    var angle = state.t * 0.05;
+
+    // MXU-Kern
+    ctx.fillStyle = 'rgba(255,107,107,0.1)';
+    ctx.shadowColor = '#ff6b6b';
+    ctx.shadowBlur = 20;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.fillStyle = '#ff6b6b';
+    ctx.font = 'bold 12px Consolas';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('MXU', cx, cy);
+
+    // Layers
+    var layers = MXU.layers;
+    for (var i = 0; i < layers.length; i++) {
+        var a = angle + (i / layers.length) * Math.PI * 2;
+        var x = cx + Math.cos(a) * r * 0.8;
+        var y = cy + Math.sin(a) * r * 0.8;
+        ctx.fillStyle = 'rgba(255,107,107,0.1)';
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#444';
+        ctx.font = '3px Consolas';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(layers[i], x, y - 5);
+    }
+
+    ctx.fillStyle = 'rgba(255,107,107,0.05)';
+    ctx.font = '4px Consolas';
+    ctx.textBaseline = 'top';
+    ctx.fillText('◈ MXU KERN', cx - 18, cy + r * 0.55 + 4);
+}
+
+function drawNC() {
+    var r = radius * 0.5;
+    var n = 8;
+    var colors = ['#ff6b6b', '#6bff6b', '#6b6bff', '#ffd93d', '#ff44ff', '#6cf', '#ff8c00', '#4f4'];
+
+    // NC-Ring
+    ctx.strokeStyle = 'rgba(107,107,255,0.04)';
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([2, 4]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Axes
+    for (var i = 0; i < n; i++) {
+        var angle = (i / n) * Math.PI * 2 + state.t * 0.02;
+        var x = cx + Math.cos(angle) * r * 0.8;
+        var y = cy + Math.sin(angle) * r * 0.8;
+        ctx.fillStyle = colors[i] + '44';
+        ctx.shadowColor = colors[i];
+        ctx.shadowBlur = 4;
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = colors[i];
+        ctx.font = '4px Consolas';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(NC.axes[i], x, y - 6);
+    }
+
+    ctx.fillStyle = 'rgba(107,107,255,0.05)';
+    ctx.font = '4px Consolas';
+    ctx.textBaseline = 'top';
+    ctx.fillText('◆ NC · 8 AXES', cx - 20, cy + r + 10);
+}
+
+function draw4u() {
+    var r = radius * 0.15;
+    var resp = state.currentResponse || 'OK';
+    var colors = {
+        'OK': '#4f4',
+        'NOK': '#f44',
+        'FLOW': '#4ff',
+        'BREAK': '#f4f',
+        'ECHO': '#ff4',
+        'VOID': '#666',
+        'ROOT': '#ffd700'
+    };
+    var syms = {
+        'OK': '✅',
+        'NOK': '❌',
+        'FLOW': '🌊',
+        'BREAK': '💥',
+        'ECHO': '🔄',
+        'VOID': '◌',
+        'ROOT': '🌳'
+    };
+
+    var color = colors[resp] || '#6cf';
+    var sym = syms[resp] || '✦';
+
+    ctx.fillStyle = color + '22';
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 20;
+    ctx.beginPath();
+    ctx.arc(cx + r * 1.5, cy - r * 1.5, r * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.fillStyle = color;
+    ctx.font = '14px Consolas';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(sym, cx + r * 1.5, cy - r * 1.5);
+
+    ctx.fillStyle = '#666';
+    ctx.font = '4px Consolas';
+    ctx.textBaseline = 'top';
+    ctx.fillText('✦ 4u · ' + resp, cx + r * 1.5 - 14, cy - r * 1.5 + 10);
+
+    // OPEN-Marker
+    ctx.fillStyle = 'rgba(108,204,255,0.05)';
+    ctx.font = '3px Consolas';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('OPEN', cx + r * 1.5, cy - r * 1.5 - 8);
+}
+
+function drawTreue() {
+    var r = radius * 0.08;
+    var score = state.treueScore / 100;
+    var color = score > 0.8 ? '#4f4' : score > 0.4 ? '#ffd93d' : '#f44';
+
+    // Treue-Balken
+    var barX = cx + r * 1.5 + 20;
+    var barY = cy + r * 0.5 + 4;
+    var barW = 40;
+    var barH = 3;
+
+    ctx.fillStyle = '#1a1a2a';
+    ctx.fillRect(barX, barY, barW, barH);
+    ctx.fillStyle = color;
+    ctx.fillRect(barX, barY, barW * score, barH);
+
+    ctx.fillStyle = color;
+    ctx.font = '3px Consolas';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('TREUE ' + (score * 100).toFixed(0) + '%', barX, barY + barH + 2);
+}
+
+// ============================================================
+// CONTROLS
+// ============================================================
+document.getElementById('btn-start').onclick = function() {
+    state.running = !state.running;
+    this.textContent = state.running ? '⏸ STOP' : '▶ START';
+    document.getElementById('state-display').textContent = state.running ? '● läuft' : '● gestoppt';
+    document.getElementById('state-display').style.color = state.running ? 'var(--gold)' : '#666';
+    log(state.running ? '▶ MXU gestartet' : '⏸ MXU gestoppt', 'mxu');
+};
+
+document.getElementById('btn-mxu').onclick = function() { activateMod('MXU'); };
+document.getElementById('btn-nc').onclick = function() { activateMod('NC'); };
+document.getElementById('btn-treue').onclick = function() {
+    state.treueScore = Math.min(100, state.treueScore + 10);
+    document.getElementById('treue-value').textContent = state.treueScore + '%';
+    log('⚡ TREUE ' + state.treueScore + '%', 'treue');
+};
+document.getElementById('btn-4u').onclick = function() {
+    state.fourCount++;
+    fourOpen();
+};
+
+document.getElementById('btn-reset').onclick = function() {
+    state.running = false;
+    state.cycle = 0;
+    state.t = 0;
+    state.mxuCount = 0;
+    state.ncCount = 0;
+    state.fourCount = 0;
+    state.treueScore = 100;
+    state.pxSignal = 0;
+    state.currentResponse = 'OK';
+    document.getElementById('btn-start').textContent = '▶ START';
+    document.getElementById('state-display').textContent = '● reset';
+    document.getElementById('state-display').style.color = '#f44';
+    document.getElementById('cycle-display').textContent = 'MXU 0';
+    document.getElementById('mxu-value').textContent = '●';
+    document.getElementById('nc-value').textContent = '0';
+    document.getElementById('treue-value').textContent = '100%';
+    document.getElementById('px-value').textContent = '0';
+    var els = document.querySelectorAll('.mod');
+    for (var i = 0; i < els.length; i++) {
+        els[i].classList.remove('active');
+    }
+    document.querySelector('.mod[data-mod="MXU"]').classList.add('active');
+    log('⟲ RESET — MXU zurückgesetzt', 'mxu');
+};
+
+document.getElementById('btn-auto').onclick = function() {
+    state.autoMode = !state.autoMode;
+    this.textContent = state.autoMode ? '⏸ PAUSE' : '▶ AUTO';
+    if (state.autoMode) {
+        state.running = true;
+        document.getElementById('btn-start').textContent = '⏸ STOP';
+        document.getElementById('state-display').textContent = '● auto';
+        document.getElementById('state-display').style.color = 'var(--gold)';
+        if (window.autoInterval) clearInterval(window.autoInterval);
+        window.autoInterval = setInterval(function() {
+            var mods = ['MXU', 'NC', '4u'];
+            var idx = Math.floor(Math.random() * mods.length);
+            activateMod(mods[idx]);
+            if (mods[idx] === '4u') fourOpen();
+            log('🔄 ' + mods[idx] + ' · TREUE ' + state.treueScore + '%', 'mxu');
+        }, 3000);
+        log('▶ AUTO · MXU rotiert', 'mxu');
+    } else {
+        clearInterval(window.autoInterval);
+        log('⏸ AUTO pausiert', 'mxu');
+    }
+};
+
+// ============================================================
+// MOD-KLICKS
+// ============================================================
+var modEls = document.querySelectorAll('.mod');
+for (var i = 0; i < modEls.length; i++) {
+    modEls[i].onclick = function() {
+        var key = this.getAttribute('data-mod');
+        activateMod(key);
+        if (key === '4u') fourOpen();
+    };
+}
+
+// ============================================================
+// TASTATUR
+// ============================================================
+document.addEventListener('keydown', function(e) {
+    if (e.key === ' ') { e.preventDefault(); document.getElementById('btn-start').click(); }
+    if (e.key === '1') activateMod('MXU');
+    if (e.key === '2') activateMod('NC');
+    if (e.key === '3') { activateMod('4u'); fourOpen(); }
+    if (e.key === '4') document.getElementById('btn-treue').click();
+    if (e.key === 'x') document.getElementById('btn-reset').click();
+    if (e.key === 'a') document.getElementById('btn-auto').click();
+});
+
+// ============================================================
+// UHR
+// ============================================================
+function updateClock() {
+    document.getElementById('clock').textContent = '⏱️ ' + new Date().toLocaleTimeString();
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ============================================================
+// INIT
+// ============================================================
+log('◈ MXU · KERNSTATION · 4u · SYS · TEM', 'mxu');
+log('◆ NC · Neutral-Core · 8 Achsen', 'nc');
+log('✦ 4u · OPEN · Response Layer 7', 'four');
+log('⚡ TREUE · 100% · System stabil', 'treue');
+log('⌨️  1=MXU 2=NC 3=4u 4=TREUE  x=Reset  a=Auto', 'mxu');
+
+setTimeout(function() {
+    state.running = true;
+    document.getElementById('btn-start').textContent = '⏸ STOP';
+    document.getElementById('state-display').textContent = '● läuft';
+    document.getElementById('state-display').style.color = 'var(--gold)';
+    log('▶ MXU automatisch gestartet · ◈', 'mxu');
+}, 500);
+</script>
 </body>
 </html>
