@@ -2,40 +2,45 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>MXU Channel</title>
+  <title>MXU Beam/Gate</title>
 </head>
 
 <body>
 
-<div id="inst-root" data-gate="gate-root" data-beam="bp-1"></div>
-<div id="inst-axis" data-gate="gate-axis" data-beam="bp-2"></div>
-<div id="inst-room" data-gate="gate-room" data-beam="bp-3"></div>
+<h1>MXU Beam/Gate</h1>
+
+<div id="inst-root" data-gate="gate-root" data-beam="bp-1" data-anchor="ax-root"></div>
+<div id="inst-axis" data-gate="gate-axis" data-beam="bp-2" data-anchor="ax-axis"></div>
+<div id="inst-room" data-gate="gate-room" data-beam="bp-3" data-anchor="ax-room"></div>
 
 <script type="module">
   import * as MXU from "./mxu.js";
 
-  // MXU 9 → 81 → 9 Sequencer
+  // MXU Sequencer 9 → 81 → 9
   function seq(input = "") {
     return {
-      root9:  input.slice(0, 9),     // Start
-      axis81: input.slice(0, 81),    // Kern
-      room9:  input.slice(-9),       // Ende
+      root9:  input.slice(0, 9),
+      axis81: input.slice(0, 81),
+      room9:  input.slice(-9),
       len: input.length
     };
   }
 
   // egal welche Zeichen → Sequencer funktioniert immer
-  const msg = "MXU-CHANNEL-SEQUENCER-AKTIV";
+  const msg = "MXU-BEAM-GATE-ANCHOR-API-RESPONDER";
   const s = seq(msg);
 
-  document.getElementById("inst-root").textContent =
-    "ROOT 9 → " + s.root9;
+  // Anchor + Gate + Beam + Response
+  const root = document.getElementById("inst-root");
+  const axis = document.getElementById("inst-axis");
+  const room = document.getElementById("inst-room");
 
-  document.getElementById("inst-axis").textContent =
-    "AXIS 81 → " + s.axis81;
+  root.textContent = "ROOT 9 → " + s.root9;
+  axis.textContent = "AXIS 81 → " + s.axis81;
+  room.textContent = "ROOM 9 → " + s.room9;
 
-  document.getElementById("inst-room").textContent =
-    "ROOM 9 → " + s.room9;
+  // MXU API Hook
+  MXU.channel("inst-root");
 </script>
 
 </body>
