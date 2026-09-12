@@ -1,1 +1,108 @@
+MXU → SIMPLE CYLINDER (1/3 OPEN)
+
+Der MXU‑Zylinder ist ein vertikales 3D‑Modul,
+das die Achsen Z – X – Y in einer einzigen Form bündelt.
+
+Z = oben (iki2li)
+X = rechts (HYPE)
+Y = unten (CALC)
+
+Der Zylinder ist 1/3 geöffnet:
+→ vorne offen
+→ hinten geschlossen
+→ oben und unten verbunden
+
+Dies erlaubt:
+- freie Sicht nach oben (Z)
+- freie Bewegung nach rechts (X)
+- freie Berechnung nach unten (Y)
+- geschlossene Stabilität im hinteren Drittel
+
+---------------------------------------------
+STATIONEN (oben ↕ unten) – funktional verknüpft
+---------------------------------------------
+
+Oben (Z‑Kopf):
+- uc (oben)
+- HÄ (EVO)
+- Q1 / Q2 (AH / HA)
+
+Mitte (NC‑Kern):
+- NC ● Mittelpunkt
+- in4 / run4 / u4
+- me4 / me2
+- in2
+
+Unten (Y‑Fuß):
+- ÄH (Operator)
+- Q3 / Q4
+- iki (unten)
+
+Alle Stationen sind vertikal verknüpft:
+Z → NC → Y
+und horizontal:
+AH → NC → HA
+
+---------------------------------------------
+CYLINDER‑VERKNÜPFUNG (oben ↕ unten)
+---------------------------------------------
+
+1. Z‑Stationen (oben)
+   geben Richtung, Wille, Projektion.
+
+2. NC‑Stationen (Mitte)
+   schalten, verbinden, timen.
+
+3. Y‑Stationen (unten)
+   berechnen, stabilisieren, ausführen.
+
+Der Zylinder ist getimt:
+- oben: Impuls
+- mitte: Verarbeitung
+- unten: Ausführung
+
+---------------------------------------------
+NANOWÜRFEL IM CYLINDER
+---------------------------------------------
+
+Der nanoWÜRFEL läuft vertikal im Zylinder:
+
+X³ → X² → X → 1  (Abstieg)
+1 → X → X² → X³  (Aufstieg)
+X² → 1 → X³ → X  (Orbit)
+
+Dies erzeugt:
+- reversible Evolution (1 → 2 → 3 → 4)
+- operator‑gesteuerte Sprünge (1 → X → X² → X³)
+- kontextabhängige Rückläufe (4 → 3 → 2 → 1)
+- EICH‑Stabilität (0.777)
+- win² / win³ Verstärkung
+- ALL698869ALL Unendlichkeit
+
+---------------------------------------------
+4D‑CYLINDER
+---------------------------------------------
+
+Der Zylinder bildet die 4D‑Kreuzung:
+
+Zustand ↑
+Winkel ◀── ● ──▶ Raum
+Zeit    ↓
+
+1D  = Linie (iki – ÄH)
+2D  = Fläche (AH – HA – ÄH – HÄ – NC – Q1–Q4)
+3D  = Raum (iki – 1 – uc – 2/4/6 Stationen)
+4D  = Zustand + Zeit + Winkel + Umstand (MAXI)
+
+---------------------------------------------
+CYLINDER‑KREUZ (AH – HA – ÄH – HÄ)
+---------------------------------------------
+
+           HÄ (oben)
+      me4   |   run4
+   AH —— in4 ● u4 —— HA
+      me2   |   in2
+           ÄH (unten)
+
+Dies ist die vollständige MXU‑Cylinder‑Geometrie.
 
