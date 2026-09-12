@@ -10,3 +10,9 @@ export function nist(atom) {
     ready: true
   };
 }
+NC.SENSOR = function(px = {}) {
+  return {
+    NIST: nist(px.atom),
+    ok: true
+  };
+};
