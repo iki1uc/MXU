@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>ROOT · NC-FS Monitor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  body {
+    background:#0b0f12;
+    color:#c8d0d8;
+    font-family:Arial, sans-serif;
+    margin:0; padding:20px;
+  }
+  h1 { font-size:20px; margin-bottom:10px; }
+  .box {
+    background:#11161c;
+    padding:16px;
+    border-radius:6px;
+    margin-bottom:20px;
+    border:1px solid #1f2a33;
+  }
+  .badge {
+    font-size:10px;
+    opacity:0.8;
+    padding:2px 6px;
+    background:#222;
+    border-radius:4px;
+  }
+  button {
+    padding:6px 10px;
+    font-size:11px;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+  }
+  button.primary { background:#4cc9f0; color:#000; }
+  button.gold { background:#f0d080; color:#000; }
+  button.violet { background:#b388ff; color:#000; }
+
+  /* ── NC.FS · FILE SCAN ───────────────────────────────────────── */
+  #fsList{
+    display:flex;flex-direction:column;gap:2px;
+    max-height:340px;overflow-y:auto;
+    font-size:9.5px;padding-right:4px;
+  }
+  .fs-row{
+    display:grid;
+    grid-template-columns:8px 1fr auto auto;
+    gap:6px;align-items:center;
+    padding:3px 6px;
+    background:rgba(0,0,0,0.3);
+    border-radius:3px;
+    border-left:2px solid #333;
+  }
+  .fs-dot{width:6px;height:6px;border-radius:50%;background:#666;}
+  .fs-path{color:#a8c0d0;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .fs-status{font-size:8px;padding:1px 5px;border-radius:3px;font-weight:bold;letter-spacing:.5px;}
+  .fs-action{color:#5a7a8a;font-size:8px;white-space:nowrap;}
+
+  .fs-row.fs-neu{border-left-color:#8cf0d0;}
+  .fs-row.fs-neu .fs-dot{background:#8cf0d0;box-shadow:0 0 6px #8cf0d0;}
+  .fs-row.fs-neu .fs-status{background:rgba(140,240,208,0.15);color:#8cf0d0;}
+
+  .fs-row.fs-mxualt{border-left-color:#f0d080;}
+  .fs-row.fs-mxualt .fs-dot{background:#f0d080;}
+  .fs-row.fs-mxualt .fs-status{background:rgba(240,208,128,0.15);color:#f0d080;}
+
+  .fs-row.fs-ncalt{border-left-color:#b388ff;}
+  .fs-row.fs-ncalt .fs-dot{background:#b388ff;}
+  .fs-row.fs-ncalt .fs-status{background:rgba(179,136,255,0.15);color:#b388ff;}
+
+  .fs-row.fs-htmlalt,.fs-row.fs-jsalt,.fs-row.fs-mdalt{border-left-color:#6cf;}
+  .fs-row.fs-htmlalt .fs-dot,.fs-row.fs-jsalt .fs-dot,.fs-row.fs-mdalt .fs-dot{background:#6cf;}
+  .fs-row.fs-htmlalt .fs-status,.fs-row.fs-jsalt .fs-status,.fs-row.fs-mdalt .fs-status{background:rgba(108,204,255,0.15);color:#6cf;}
+
+  .fs-row.fs-dir{border-left-color:#888;}
+  .fs-row.fs-dir .fs-dot{background:#888;}
+  .fs-row.fs-dir .fs-status{background:rgba(136,136,136,0.15);color:#aaa;}
+
+  .fs-row.fs-fehlt{border-left-color:#ff6666;}
+  .fs-row.fs-fehlt .fs-dot{background:#ff6666;box-shadow:0 0 6px #ff6666;}
+  .fs-row.fs-fehlt .fs-status{background:rgba(255,102,102,0.15);color:#ff6666;}
+</style>
+</head>
+
+<body>
+
+<h1>ROOT · NC-FS Monitor</h1>
+
+<div class="box">
+  <h2>◈ ORDNER · NC-FS <span class="badge" id="fsBadge">— nicht gescannt —</span></h2>
+
+  <div id="fsList">
+    <div style="color:#5a7a8a;font-size:10px;text-align:center;padding:12px 0;">
+      Noch kein Scan. ▶ SCAN drücken.
+    </div>
+  </div>
+
+  <div class="ctrl" style="margin-top:8px;">
+    <button id="btnFsScan" class="primary">▶ SCAN</button>
+    <button id="btnFsReport" class="gold">⌨ REPORT</button>
+    <button id="btnFsMark" class="violet">✓ ROOT MARK</button>
+  </div>
+</div>
+
+<script>
+/* ────────────────────────────────────────────────────────────────
+   NC.FS · FILE SCAN · Ordner-Kontrolle
+   flach · atomar · neutral · keine Kaskade
+   ─────────────────────────────────────────────────────────────── */
+
+const NC = {};
+
+NC.FS = (() => {
+
+    const EXPECTED = [
+        { path:"AX/",kind:"dir" },{ path:"IS/",kind:"dir" },{ path:"IU/",kind:"dir" },
+        { path:"MX/",kind:"dir" },{ path:"NC/",kind:"dir" },{ path:"UX/",kind:"dir" },
+        { path:"XA/",kind:"dir" },{ path:"txt/",kind:"dir" },
+
+        { path:"index.html",kind:"html",primary:true },
+        { path:"404.html",kind:"html" },{ path:"ax.html",kind:"html" },
+        { path:"beam.html",kind:"html" },{ path:"ch.html",kind:"html" },
+        { path:"px.html",kind:"html" },{ path:"rum.html",kind:"html" },
+        { path:"xa.html",kind:"html" },
+
+        { path:"AXINXA.js",kind:"js" },
+        { path:"mxu.js",kind:"js",mxu:true },
+        { path:"nc.js",kind:"js",nc:true },
+        { path:"nc.evo.js",kind:"js",nc:true },
+        { path:"nist.js",kind:"js",nc:true },
+        { path:"respo.js",kind:"js" },
+        { path:"sa.js",kind:"js" },{ path:"sen.js",kind:"js" },
+        { path:"sym.js",kind:"js" },{ path:"tion.js",kind:"js" },
+
+        { path:"MXU_CONTENT.js",kind:"js",mxu:true },
+        { path:"MXU_TREUE.js",kind:"js",mxu:true },
+        { path:"MXU_dashboard.js",kind:"js",mxu:true },
+        { path:"MXU_fromPX.js",kind:"js",mxu:true },
+        { path:"MXU_fullSync.js",kind:"js",mxu:true },
+        { path:"MXU_layers.js",kind:"js",mxu:true },
+
+        { path:"README.md",kind:"md" },
+        { path:"MXU README.md",kind:"md",mxu:true },
+    ];
+
+    const state = { report:[], lastRun:0 };
+
+    function classify(e, ok){
+        if(!ok) return "FEHLT";
+        if(e.primary) return "NEU";
+        if(e.mxu) return "MXU-ALT";
+        if(e.nc) return "NC-ALT";
+        if(e.kind==="dir") return "DIR";
+        if(e.kind==="html") return "HTML-ALT";
+        if(e.kind==="js") return "JS-ALT";
+        if(e.kind==="md") return "MD-ALT";
+        return "UNBEKANNT";
+    }
+
+    function actionFor(e, ok){
+        if(!ok) return "PRÜFEN";
+        if(e.primary) return "OK · Root";
+        if(e.mxu) return "MXU-Pass";
+        if(e.nc) return "NC-Pass";
+        if(e.kind==="html") return "HTML-Pass";
+        if(e.kind==="js") return "JS-Pass";
+        if(e.kind==="md") return "MD-Pass";
+        return "—";
+    }
+
+    async function exists(path){
+        try{
+            const r = await fetch(path,{method:"HEAD"});
+            return r.ok;
+        }catch{return false;}
+    }
+
+    async function scan(){
+        const report=[];
+        for(const e of EXPECTED){
+            const ok = await exists(e.path);
+            report.push({
+                path:e.path,
+                kind:e.kind,
+                status:classify(e,ok),
+                exists:ok,
+                action:actionFor(e,ok)
+            });
+        }
+        state.report = report;
+        renderReport(report);
+        updateBadge();
+        return report;
+    }
+
+    function summary(){
+        const s={};
+        for(const e of state.report) s[e.status]=(s[e.status]||0)+1;
+        return s;
+    }
+
+    function renderReport(report){
+        const el=document.getElementById("fsList");
+        el.innerHTML="";
+        report.forEach(e=>{
+            const row=document.createElement("div");
+            row.className="fs-row fs-"+slug(e.status);
+            row.innerHTML=
+              `<span class="fs-dot"></span>`+
+              `<span class="fs-path">${e.path}</span>`+
+              `<span class="fs-status">${e.status}</span>`+
+              `<span class="fs-action">${e.action}</span>`;
+            el.appendChild(row);
+        });
+    }
+
+    function updateBadge(){
+        const b=document.getElementById("fsBadge");
+        const s=summary();
+        b.textContent = Object.entries(s).map(([k,v])=>`${v}× ${k}`).join(" · ");
+    }
+
+    function slug(s){ return s.toLowerCase().replace(/[^a-z]/g,""); }
+
+    return { scan, summary, state, EXPECTED };
+})();
+
+/* Buttons */
+document.getElementById("btnFsScan").addEventListener("click",()=>NC.FS.scan());
+document.getElementById("btnFsReport").addEventListener("click",()=>{
+    const rep=NC.FS.state.report;
+    if(!rep.length){ console.warn("NC.FS · kein Scan"); return; }
+    console.table(rep);
+});
+document.getElementById("btnFsMark").addEventListener("click",()=>{
+    console.log("◈ ROOT MARK · bestätigt");
+});
+
+/* Auto-Scan */
+window.addEventListener("load",()=>setTimeout(()=>NC.FS.scan(),400));
+</script>
+
+</body>
+</html>
