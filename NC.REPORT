@@ -1,6 +1,25 @@
 NC.REPORT = function(px = {}) {
+  const atom = px.atom || null;
+
   return {
-    ATOM: px.atom || null,
+    // ATOM‑Kern
+    ATOM: atom,
+
+    // OR‑Struktur
+    OR3: px.OR3 || null,
+    OR9: px.OR9 || null,
+    OR81: px.OR81 || (atom ? atom.cycle : []),
+
+    // Sequenz / Ablauf
+    seq: px.seq || [],
+
+    // Mode‑Routing
+    mode: atom ? "mode6" : "pure",
+
+    // Beam‑Status
+    beam: px.beam || null,
+    gate: px.gate || null,
+
     ok: true
   };
 };
