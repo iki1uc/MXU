@@ -1,21 +1,13 @@
-// MXU_TREUE.js
 export const MXU_TREUE = (() => {
 
     const history = [];
-    let score = 0;
-
-    const RULES = {
-        OK:   (px, meta, axis, nc) => px && meta && axis && nc,
-        HOT:  (px, meta)           => px && meta && !axis,
-        MISS: (px)                 => px && !meta,
-        FAIL: ()                   => true
-    };
 
     function getStatus(px, meta, axis, nc) {
-        if (RULES.OK(px, meta, axis, nc))  return "OK";
-        if (RULES.HOT(px, meta))           return "HOT";
-        if (RULES.MISS(px))                return "MISS";
-        return "FAIL";
+        if (!px) return "INSTABIL";
+        if (!meta) return "INSTABIL";
+        if (!axis) return "NEUTRAL";
+        if (!nc) return "NEUTRAL";
+        return "TREU";
     }
 
     function accept(packet = {}) {
@@ -31,23 +23,15 @@ export const MXU_TREUE = (() => {
 
         entry.status = getStatus(entry.px, entry.meta, entry.axis, entry.nc);
 
-        if (entry.status === "OK")  score += 2;
-        if (entry.status === "HOT") score += 1;
-        if (entry.status === "MISS") score += 0;
-        if (entry.status === "FAIL") score -= 1;
-
         history.push(entry);
 
         return entry;
     }
 
     function getTreue() {
+        const last = history.slice(-1)[0];
         return {
-            score,
-            status: score > 10 ? "STABIL"
-                  : score > 0  ? "TREU"
-                  : score === 0 ? "NEUTRAL"
-                  : "INSTABIL",
+            status: last?.status || "INSTABIL",
             last: history.slice(-10)
         };
     }
