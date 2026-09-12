@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>RUM.EXE – MXU AUTO</title>
+</head>
+
+<body>
+
+<h1>RUM.EXE – MXU AUTO</h1>
+<div id="channel"></div>
+
+<script type="module">
+  import * as MXU from "./mxu.js";
+  import { AXINXA } from "./AXINXA.js";
+
+  // Energie-Module
+  import { SEN } from "./sen.js";
+  import { SA } from "./sa.js";
+  import { TION } from "./tion.js";
+
+  // Start MXU
+  MXU.channel("channel");
+
+  // AXINXA koppeln
+  AXINXA.attach(MXU);
+
+  // Energie laden
+  const energy = {
+    sen: SEN(1),
+    sa: SA(1),
+    tion: TION(1)
+  };
+
+  // Ausgabe
+  document.getElementById("channel").innerHTML = `
+    <pre>${JSON.stringify(energy, null, 2)}</pre>
+  `;
+</script>
+
+</body>
+</html>
