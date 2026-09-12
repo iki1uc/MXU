@@ -2,40 +2,40 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>RUM.EXE – MXU AUTO</title>
+  <title>RUM.EXE – MXU Sequencer</title>
 </head>
 
 <body>
 
-<h1>RUM.EXE – MXU AUTO</h1>
-<div id="channel"></div>
+<div id="seq-root"></div>
+<div id="seq-axis"></div>
+<div id="seq-room"></div>
 
 <script type="module">
   import * as MXU from "./mxu.js";
-  import { AXINXA } from "./AXINXA.js";
 
-  // Energie-Module
-  import { SEN } from "./sen.js";
-  import { SA } from "./sa.js";
-  import { TION } from "./tion.js";
+  // 9 → 81 → 9 Sequencer
+  function sequencer(input = "") {
+    return {
+      start9: input.slice(0, 9),          // erster 9er Block
+      core81: input.slice(0, 81),         // 81er Kern
+      end9: input.slice(-9),              // letzter 9er Block
+      length: input.length,
+      cycle: 9 + 81 + 9
+    };
+  }
 
-  // Start MXU
-  MXU.channel("channel");
+  const msg = "MXU-SEQUENCER-AKTIV";      // egal welche Zeichen
+  const seq = sequencer(msg);
 
-  // AXINXA koppeln
-  AXINXA.attach(MXU);
+  document.getElementById("seq-root").textContent =
+    "ROOT 9: " + seq.start9;
 
-  // Energie laden
-  const energy = {
-    sen: SEN(1),
-    sa: SA(1),
-    tion: TION(1)
-  };
+  document.getElementById("seq-axis").textContent =
+    "AXIS 81: " + seq.core81;
 
-  // Ausgabe
-  document.getElementById("channel").innerHTML = `
-    <pre>${JSON.stringify(energy, null, 2)}</pre>
-  `;
+  document.getElementById("seq-room").textContent =
+    "ROOM 9: " + seq.end9;
 </script>
 
 </body>
