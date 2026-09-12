@@ -2,29 +2,22 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>AXINXA Visualizer</title>
+  <title>AXINXA Atom Source</title>
 </head>
 
 <body>
 
-<h1>AXINXA Visualizer</h1>
-<pre id="log"></pre>
-
+<!-- Keine Ausgabe, keine Visualisierung, nur Quelle -->
 <script type="module">
   import { AXINXA } from "./AXINXA.js";
   import * as MXU from "./mxu.js";
 
-  const log = document.getElementById("log");
-  const orig = console.log;
-
-  console.log = (...args) => {
-    orig(...args);
-    log.textContent += args.join(" ") + "\n";
-  };
-
+  // AXINXA als Atom-Quelle koppeln
   AXINXA.attach(MXU);
+
+  // Keine Logs, keine Masse, keine Visualisierung
+  // Nur reine Aktivierung
 </script>
 
 </body>
 </html>
-
