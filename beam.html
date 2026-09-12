@@ -2,32 +2,56 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>MXU Beam/Gate – Pure</title>
+  <title>MXU Beam – Extended Pure</title>
+  <style>
+    body { font-family: sans-serif; }
+    .beam-box {
+      padding: 10px;
+      margin: 10px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      background: #f5f5f5;
+    }
+    .label {
+      font-weight: bold;
+      color: #444;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>MXU Beam/Gate – Reinheit</h1>
+<h1>MXU Beam – Erweiterte Reinheit</h1>
 
-<!-- Drei reine Punkte: Ort / Home / User -->
-<div id="inst-root" data-gate="gate-root" data-beam="bp-1"></div>
-<div id="inst-axis" data-gate="gate-axis" data-beam="bp-2"></div>
-<div id="inst-room" data-gate="gate-room" data-beam="bp-3"></div>
+<div id="beam-root" class="beam-box" data-gate="gate-root" data-beam="bp-1">
+  <div class="label">ROOT • Beam</div>
+  <div id="beam-root-info"></div>
+</div>
+
+<div id="beam-axis" class="beam-box" data-gate="gate-axis" data-beam="bp-2">
+  <div class="label">AXIS • Beam</div>
+  <div id="beam-axis-info"></div>
+</div>
+
+<div id="beam-room" class="beam-box" data-gate="gate-room" data-beam="bp-3">
+  <div class="label">ROOM • Beam</div>
+  <div id="beam-room-info"></div>
+</div>
 
 <script type="module">
   import * as MXU from "./mxu.js";
 
-  // Reinheitsgehalt: nur 3 Punkte, keine Erweiterung
-  const root = document.getElementById("inst-root");
-  const axis = document.getElementById("inst-axis");
-  const room = document.getElementById("inst-room");
+  function showBeam(id, target) {
+    const beam = MXU.BEAM(id, {});
+    target.textContent =
+      "Gate: " + beam.gate +
+      " | Beam: " + beam.beam +
+      " | Mode: Pure";
+  }
 
-  root.textContent = "ROOT • Rein";
-  axis.textContent = "AXIS • Rein";
-  room.textContent = "ROOM • Rein";
-
-  // Minimaler MXU-Startpunkt
-  MXU.channel("inst-root");
+  showBeam("beam-root", document.getElementById("beam-root-info"));
+  showBeam("beam-axis", document.getElementById("beam-axis-info"));
+  showBeam("beam-room", document.getElementById("beam-room-info"));
 </script>
 
 </body>
