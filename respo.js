@@ -1,8 +1,18 @@
-export function RESPO(px) {
+export function RESPO(px = {}) {
+
+    // Fallbacks für alle Eventualitäten
+    const tokens = Array.isArray(px.tokens) ? px.tokens : [];
+    const ghost  = px.meta?.ghost ?? "none";
+    const sinn   = px.meta?.sinn ?? "none";
+
+    // System-Bereitschaft
+    const ready = ghost !== "none" || sinn !== "none" || tokens.length > 0;
+
     return {
-        tokens: px.tokens || [],
-        ghost: px.meta?.ghost || "none",
-        sinn: px.meta?.sinn || "none",
-        info: "RESPO → Meta stabilisiert"
+        tokens,
+        ghost,
+        sinn,
+        ready,
+        info: "RESPO → Meta stabilisiert & freier Fall verhindert"
     };
 }
