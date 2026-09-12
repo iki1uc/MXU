@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>MXU Channel</title>
+  <title>MXU Sequencer</title>
 </head>
 
 <body>
@@ -14,9 +14,27 @@
 <script type="module">
   import * as MXU from "./mxu.js";
 
-  document.getElementById("inst-root").textContent = "ROOT ACTIVE";
-  document.getElementById("inst-axis").textContent = "AXIS ACTIVE";
-  document.getElementById("inst-room").textContent = "ROOM ACTIVE";
+  // 9 → 81 → 9 Sequencer
+  function seq(input = "") {
+    return {
+      root9:  input.slice(0, 9),     // Start
+      axis81: input.slice(0, 81),    // Kern
+      room9:  input.slice(-9),       // Ende
+      len: input.length
+    };
+  }
+
+  const msg = "MXU-SEQUENCER-AKTIV-INPUT";   // egal welche Zeichen
+  const s = seq(msg);
+
+  document.getElementById("inst-root").textContent =
+    "ROOT 9 → " + s.root9;
+
+  document.getElementById("inst-axis").textContent =
+    "AXIS 81 → " + s.axis81;
+
+  document.getElementById("inst-room").textContent =
+    "ROOM 9 → " + s.room9;
 </script>
 
 </body>
