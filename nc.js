@@ -11,21 +11,25 @@ export function OR81(matrix) {
   return { cycle: matrix, mode: "or81" };
 }
 
-// ATOM aus fromPX() wird überall eingebaut
-// — SENSOR
+// NC‑Namespace
+export const NC = {};
+
+// NC.SENSOR — ATOM eingebaut
 NC.SENSOR = function(px = {}) {
+  const atom = px.atom || null;
+
   return {
-    ATOM: px.atom || null,
-    entropy: px.atom?.entropy || 0,
-    spin: px.atom?.spin || 0,
-    charge: px.atom?.charge || 0,
-    symmetry: px.atom?.symmetry || 0,
-    coherence: px.atom?.coherence || false,
+    ATOM: atom,
+    entropy: atom?.entropy || 0,
+    spin: atom?.spin || 0,
+    charge: atom?.charge || 0,
+    symmetry: atom?.symmetry || 0,
+    coherence: atom?.coherence || false,
     ok: true
   };
 };
 
-// — WORK
+// NC.WORK — ATOM + OR‑Module
 NC.WORK = function(px = {}) {
   return {
     ATOM: px.atom || null,
@@ -36,7 +40,7 @@ NC.WORK = function(px = {}) {
   };
 };
 
-// — AROUND
+// NC.AROUND — ATOM + OR81‑Cycle
 NC.AROUND = function(px = {}) {
   return {
     ATOM: px.atom || null,
@@ -46,11 +50,13 @@ NC.AROUND = function(px = {}) {
   };
 };
 
-// — ATOM mit OR81 gekoppelt (Meta‑Kopplung)
+// NC.COUPLE — ATOM ↔ OR81 Kopplung
 NC.COUPLE = function(px = {}) {
+  const atom = px.atom || null;
+
   return {
-    ATOM: px.atom || null,
-    OR81: OR81(px.atom ? px.atom.cycle : []),
+    ATOM: atom,
+    OR81: OR81(atom ? atom.cycle : []),
     ok: true
   };
 };
