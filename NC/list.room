@@ -1,13 +1,27 @@
-// NC/list.room — liefert eine Liste aller Räume
+// NC/list.room — liefert eine Liste aller Räume (MXU-Cylinder-Logik)
 
-import { NC_layers } from "./core/nc.layers.js";
+import { NC_LAYERS } from "../core/nc.layers.js";
 
 export function NC_listRoom() {
+
+    // Cylinder-Stationen oben ↕ unten
+    const cylinder = {
+        top: ["uc", "HÄ", "Q1", "Q2"],
+        core: ["NC", "in4", "run4", "u4", "me4", "me2", "in2"],
+        bottom: ["ÄH", "Q3", "Q4", "iki"]
+    };
+
+    // Layer-Liste aus NC_LAYERS extrahieren
+    const layers = Object.entries(NC_LAYERS.map).map(([name, value]) => ({
+        name,
+        layer: value
+    }));
+
     return {
         type: "NC-list",
         time: Date.now(),
-        rooms: NC_layers,
+        cylinder,
+        layers,
         info: "NC_listRoom → Raumliste erfolgreich geladen"
     };
 }
-
