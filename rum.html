@@ -1,42 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>RUM.EXE – MXU Sequencer</title>
-</head>
+// RUM.EXE · MXU-Sequencer-Systemmodul
+import * as MXU from "./mxu.js";
 
-<body>
+export const RUM_SYS = {
 
-<div id="seq-root"></div>
-<div id="seq-axis"></div>
-<div id="seq-room"></div>
-
-<script type="module">
-  import * as MXU from "./mxu.js";
-
-  // 9 → 81 → 9 Sequencer
-  function sequencer(input = "") {
+  // Atom-Kern
+  core(input = "") {
     return {
-      start9: input.slice(0, 9),          // erster 9er Block
-      core81: input.slice(0, 81),         // 81er Kern
-      end9: input.slice(-9),              // letzter 9er Block
+      start9: input.slice(0, 9),
+      core81: input.slice(0, 81),
+      end9: input.slice(-9),
       length: input.length,
-      cycle: 9 + 81 + 9
+      cycle: 99
     };
+  },
+
+  // System-Sensor
+  sensor(input = "") {
+    return this.core(input);
+  },
+
+  // System-Arbeiter
+  worker(input = "") {
+    return this.core(input);
+  },
+
+  // Mini-Stage
+  stage: {
+    1: () => RUM_SYS.worker("ROOT-AXIS-ROOM"),
+    2: () => RUM_SYS.worker("MXU-SEQUENCER-AKTIV"),
+    3: () => RUM_SYS.worker("SYSTEM-SEQUENCER-READY")
+  },
+
+  // NC-Hooks
+  nc: {
+    mark:   (msg = "") => RUM_SYS.core(msg),
+    sensor: (msg = "") => RUM_SYS.sensor(msg),
+    report: (msg = "") => ({ module: "RUM", ...RUM_SYS.core(msg) })
+  },
+
+  // MXU-Hook
+  mxu: {
+    attach(MXU) {
+      MXU.RUM = RUM_SYS;
+      return true;
+    }
   }
-
-  const msg = "MXU-SEQUENCER-AKTIV";      // egal welche Zeichen
-  const seq = sequencer(msg);
-
-  document.getElementById("seq-root").textContent =
-    "ROOT 9: " + seq.start9;
-
-  document.getElementById("seq-axis").textContent =
-    "AXIS 81: " + seq.core81;
-
-  document.getElementById("seq-room").textContent =
-    "ROOM 9: " + seq.end9;
-</script>
-
-</body>
-</html>
+};
