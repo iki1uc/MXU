@@ -16,30 +16,33 @@
 <script type="module">
   import * as MXU from "./mxu.js";
 
-  // MXU Sequencer 9 → 81 → 9
-  function seq(input = "") {
+  // 3 → 9 Diamant
+  function diamond(input = "") {
     return {
-      root9:  input.slice(0, 9),
-      axis81: input.slice(0, 81),
-      room9:  input.slice(-9),
+      ort:  input.slice(0, 3),
+      home: input.slice(3, 6),
+      user: input.slice(6, 9),
+
+      use:  input.slice(0, 9),
+      rumUse: input.slice(-9),
+      rumUser: input.slice(-3),
+
       len: input.length
     };
   }
 
-  // egal welche Zeichen → Sequencer funktioniert immer
-  const msg = "MXU-BEAM-GATE-ANCHOR-API-RESPONDER";
-  const s = seq(msg);
+  const msg = "MXU-BEAM-GATE-ANCHOR-DIAMANT-API-RESPONDER";
+  const d = diamond(msg);
 
-  // Anchor + Gate + Beam + Response
-  const root = document.getElementById("inst-root");
-  const axis = document.getElementById("inst-axis");
-  const room = document.getElementById("inst-room");
+  document.getElementById("inst-root").textContent =
+    "ROOT → " + d.ort;
 
-  root.textContent = "ROOT 9 → " + s.root9;
-  axis.textContent = "AXIS 81 → " + s.axis81;
-  room.textContent = "ROOM 9 → " + s.room9;
+  document.getElementById("inst-axis").textContent =
+    "AXIS → " + d.home;
 
-  // MXU API Hook
+  document.getElementById("inst-room").textContent =
+    "ROOM → " + d.user;
+
   MXU.channel("inst-root");
 </script>
 
