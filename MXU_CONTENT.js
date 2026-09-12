@@ -1,78 +1,51 @@
-// MXU_CONTENT.js
+// MXU_CONTENT.js (NEUE VERSION)
 export const MXU_CONTENT = (() => {
 
-    // Jede Kategorie ist jetzt eine FUNKTION,
-    // die Treue-Daten verarbeitet und atomisch zurückgibt.
     const handlers = {
 
-        ATOM:  (t) => ({
+        ATOM: (t) => ({
             type: "ATOM",
-            core: t.status,
-            stamp: t.last?.[0]?.time || null
-        }),
-
-        DOM:   (t) => ({
-            type: "DOM",
-            active: t.status === "TREU",
-            nodes: t.last?.length || 0
-        }),
-
-        EVO:   (t) => ({
-            type: "EVO",
-            evolve: t.status === "STABIL",
-            history: t.last
-        }),
-
-        EOS:   (t) => ({
-            type: "EOS",
-            end: t.status === "INSTABIL",
-            reason: t.last?.slice(-1)[0] || null
+            kern: t.last?.[0] || null,
+            stabil: t.status === "STABIL",
+            tiefe: t.last?.length || 0
         }),
 
         MARKT: (t) => ({
             type: "MARKT",
+            breite: Object.keys(t).length,
+            impulse: t.last || [],
             trend: t.status,
-            moves: t.last?.length || 0
+            eco: t.status === "TREU" ? "positiv" : "neutral"
         }),
 
-        BOERSE:(t) => ({
+        BOERSE: (t) => ({
             type: "BOERSE",
-            flux: t.status === "TREU",
-            delta: t.last?.length || 0
+            flux: t.last?.length * 9,
+            richtung: t.status === "TREU" ? "↑" : "↓",
+            tiefe: t.last?.slice(-1)[0] || null
         }),
 
-        FUNK:  (t) => ({
-            type: "FUNK",
-            signal: t.status,
-            ping: Boolean(t.last?.length)
-        }),
-
-        RESPO: (t) => ({
-            type: "RESPO",
-            response: t.status,
-            last: t.last?.slice(-1)[0] || null
-        }),
-
-        PYRA:  (t) => ({
+        PYRA: (t) => ({
             type: "PYRA",
-            level: t.status,
-            stack: t.last
+            layer: t.last?.length || 0,
+            struktur: t.last?.map((e, i) => ({ index: i, value: e })),
+            tiefe: t.status === "STABIL" ? 3 : 1
         }),
 
-        SELF:  (t) => ({
+        SELF: (t) => ({
             type: "SELF",
-            identity: t.status,
-            echo: t.last?.slice(-1)[0] || null
+            identitaet: t.status,
+            treue: t.last?.length || 0,
+            muster: t.last || []
         }),
 
-        TOOL:  (t) => ({
+        TOOL: (t) => ({
             type: "TOOL",
-            usable: t.status !== "INSTABIL",
-            meta: t.last
+            nutzbar: t.status === "TREU",
+            letzteAktion: t.last?.slice(-1)[0] || null
         })
     };
 
-    // FUNKTION statt Template
     function render(name, treue) {
         const fn = handlers[name];
         if (!fn) return { type: name, error: "Kein Handler" };
