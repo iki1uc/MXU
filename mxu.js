@@ -1,17 +1,20 @@
-// MXU.js — REAL WORKING VERSION for GitHub Pages
-// Keine Abhängigkeiten, keine Moves, kein Drift, kein OLDUC
-
 export async function fromPX(input) {
-    // PX Input abholen
     const msg = (input && input.msg) ? String(input.msg) : "";
 
-    // Immer gültiger Output
+    const atom = {
+        core: msg[0] || "n",
+        dir: "n",
+        cycle: 81,
+        max: 2268
+    };
+
     return {
-        ok: true,            // zeigt nie 0
-        input: msg,          // was du eingegeben hast
-        length: msg.length,  // immer > 0 wenn Text da ist
-        time: Date.now(),    // immer gültig
-        mxu: "stable",       // MXU driftet nicht
-        move: "NONE"         // KEIN Move-Wechsel
+        ok: true,
+        input: msg,
+        length: msg.length,
+        time: Date.now(),
+        mxu: "stable",
+        move: "ATOM",
+        atom
     };
 }
