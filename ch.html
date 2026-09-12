@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>MXU Sequencer</title>
+  <title>MXU Channel</title>
 </head>
 
 <body>
@@ -14,7 +14,7 @@
 <script type="module">
   import * as MXU from "./mxu.js";
 
-  // 9 → 81 → 9 Sequencer
+  // MXU 9 → 81 → 9 Sequencer
   function seq(input = "") {
     return {
       root9:  input.slice(0, 9),     // Start
@@ -24,7 +24,8 @@
     };
   }
 
-  const msg = "MXU-SEQUENCER-AKTIV-INPUT";   // egal welche Zeichen
+  // egal welche Zeichen → Sequencer funktioniert immer
+  const msg = "MXU-CHANNEL-SEQUENCER-AKTIV";
   const s = seq(msg);
 
   document.getElementById("inst-root").textContent =
