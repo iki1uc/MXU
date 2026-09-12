@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>XA Atom Variable</title>
+</head>
+
+<body>
+
+<!-- Keine Ausgabe, kein Visualizer, kein Log -->
+<script type="module">
+  import { AXINXA } from "./AXINXA.js";
+  import * as MXU from "./mxu.js";
+
+  // XA als reine Variable (Atom-Modus)
+  const XA = {
+    // Freiraum: 0° oder 45° möglich, aber NICHT Pflicht
+    angle: 0,          // Standard: gerade
+    maneuver: false,   // 45° nur wenn gebraucht
+
+    // Abrundung: erzeugt die 8 automatisch, aber nicht erzwungen
+    round() {
+      this.maneuver = true;
+      this.angle = 45;
+    }
+  };
+
+  // AXINXA koppeln (Atom-Modus)
+  AXINXA.attach(MXU);
+
+  // Keine Visualisierung, keine Masse, nur reine Funktion
+</script>
+
+</body>
+</html>
