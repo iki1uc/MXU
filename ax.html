@@ -2,12 +2,42 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>AXINXA Atom Source</title>
+  <title>AXINXA Beam Source</title>
+  <style>
+    body { font-family: sans-serif; background:#fafafa; }
+    .beam-box {
+      padding: 12px;
+      margin: 12px;
+      border: 2px solid #222;
+      border-radius: 6px;
+      background: #fff;
+    }
+    .label {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- Keine Ausgabe, keine Visualisierung, nur Quelle -->
+<h1>AXINXA Beam – Erweiterte Reinheit</h1>
+
+<div id="beam-root" class="beam-box" data-gate="gate-root" data-beam="bp-1">
+  <div class="label">ROOT • Beam</div>
+  <div id="beam-root-info"></div>
+</div>
+
+<div id="beam-axis" class="beam-box" data-gate="gate-axis" data-beam="bp-2">
+  <div class="label">AXIS • Beam</div>
+  <div id="beam-axis-info"></div>
+</div>
+
+<div id="beam-room" class="beam-box" data-gate="gate-room" data-beam="bp-3">
+  <div class="label">ROOM • Beam</div>
+  <div id="beam-room-info"></div>
+</div>
+
 <script type="module">
   import { AXINXA } from "./AXINXA.js";
   import * as MXU from "./mxu.js";
@@ -15,8 +45,18 @@
   // AXINXA als Atom-Quelle koppeln
   AXINXA.attach(MXU);
 
-  // Keine Logs, keine Masse, keine Visualisierung
-  // Nur reine Aktivierung
+  // Beam-Status anzeigen (rein, ohne Logs)
+  function showBeam(id, target) {
+    const beam = MXU.BEAM(id, {});
+    target.textContent =
+      "Gate: " + beam.gate +
+      " | Beam: " + beam.beam +
+      " | Mode: Pure";
+  }
+
+  showBeam("beam-root", document.getElementById("beam-root-info"));
+  showBeam("beam-axis", document.getElementById("beam-axis-info"));
+  showBeam("beam-room", document.getElementById("beam-room-info"));
 </script>
 
 </body>
