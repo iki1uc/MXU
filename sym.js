@@ -1,13 +1,19 @@
 // sym.js
-// Liefert den Systemtreue-Status aus MXU_fullSync
-
 import { MXU_fullSync } from "./MXU_fullSync.js";
 
 export function SYM(msg = "") {
 
-    // MXU_fullSync ausführen
+    // FullSync starten → System aufwecken
     const packet = MXU_fullSync({ msg });
 
-    // Systemtreue-Status zurückgeben
-    return packet.treue.status;
+    // Systemkern aktivieren
+    const sys = {
+        treue: packet.treue.status,
+        kern: packet.kern || "aktiv",
+        sync: packet.sync || "ok",
+        wake: true,
+        ready: true
+    };
+
+    return sys;
 }
