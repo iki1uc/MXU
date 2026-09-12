@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>MONITOR · Sicht-Layer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  body {
+    background:#0b0f12;
+    color:#c8d0d8;
+    font-family:Arial, sans-serif;
+    margin:0; padding:20px;
+  }
+  h1 { font-size:20px; margin-bottom:10px; }
+
+  .box {
+    background:#11161c;
+    padding:16px;
+    border-radius:6px;
+    margin-bottom:20px;
+    border:1px solid #1f2a33;
+  }
+  .badge {
+    font-size:10px;
+    opacity:0.8;
+    padding:2px 6px;
+    background:#222;
+    border-radius:4px;
+  }
+  button {
+    padding:6px 10px;
+    font-size:11px;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+  }
+  button.primary { background:#4cc9f0; color:#000; }
+  button.gold { background:#f0d080; color:#000; }
+  button.violet { background:#b388ff; color:#000; }
+
+  /* ── FS-Liste ───────────────────────────────────────── */
+  #fsList{
+    display:flex;flex-direction:column;gap:2px;
+    max-height:340px;overflow-y:auto;
+    font-size:9.5px;padding-right:4px;
+  }
+  .fs-row{
+    display:grid;
+    grid-template-columns:8px 1fr auto auto;
+    gap:6px;align-items:center;
+    padding:3px 6px;
+    background:rgba(0,0,0,0.3);
+    border-radius:3px;
+    border-left:2px solid #333;
+  }
+  .fs-dot{width:6px;height:6px;border-radius:50%;background:#666;}
+  .fs-path{color:#a8c0d0;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .fs-status{font-size:8px;padding:1px 5px;border-radius:3px;font-weight:bold;letter-spacing:.5px;}
+  .fs-action{color:#5a7a8a;font-size:8px;white-space:nowrap;}
+
+  .fs-row.fs-neu{border-left-color:#8cf0d0;}
+  .fs-row.fs-neu .fs-dot{background:#8cf0d0;box-shadow:0 0 6px #8cf0d0;}
+  .fs-row.fs-neu .fs-status{background:rgba(140,240,208,0.15);color:#8cf0d0;}
+
+  .fs-row.fs-mxualt{border-left-color:#f0d080;}
+  .fs-row.fs-mxualt .fs-dot{background:#f0d080;}
+  .fs-row.fs-mxualt .fs-status{background:rgba(240,208,128,0.15);color:#f0d080;}
+
+  .fs-row.fs-ncalt{border-left-color:#b388ff;}
+  .fs-row.fs-ncalt .fs-dot{background:#b388ff;}
+  .fs-row.fs-ncalt .fs-status{background:rgba(179,136,255,0.15);color:#b388ff;}
+
+  .fs-row.fs-htmlalt,.fs-row.fs-jsalt,.fs-row.fs-mdalt{border-left-color:#6cf;}
+  .fs-row.fs-htmlalt .fs-dot,.fs-row.fs-jsalt .fs-dot,.fs-row.fs-mdalt .fs-dot{background:#6cf;}
+  .fs-row.fs-htmlalt .fs-status,.fs-row.fs-jsalt .fs-status,.fs-row.fs-mdalt .fs-status{background:rgba(108,204,255,0.15);color:#6cf;}
+
+  .fs-row.fs-dir{border-left-color:#888;}
+  .fs-row.fs-dir .fs-dot{background:#888;}
+  .fs-row.fs-dir .fs-status{background:rgba(136,136,136,0.15);color:#aaa;}
+
+  .fs-row.fs-fehlt{border-left-color:#ff6666;}
+  .fs-row.fs-fehlt .fs-dot{background:#ff6666;box-shadow:0 0 6px #ff6666;}
+  .fs-row.fs-fehlt .fs-status{background:rgba(255,102,102,0.15);color:#ff6666;}
+
+  /* ── Block-Chain ───────────────────────────────────────── */
+  #blockChain {
+    display:flex;flex-direction:column;gap:4px;
+    font-size:10px;
+  }
+  .block {
+    background:#151a20;
+    padding:8px;
+    border-radius:4px;
+    border-left:3px solid #4cc9f0;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>MONITOR · Sicht-Layer</h1>
+
+<!-- BLOCK-CHAIN -->
+<div class="box">
+  <h2>⛓ BLOCK-CHAIN <span class="badge" id="chainBadge">0 / 10</span></h2>
+  <div id="blockChain">
+    <div style="color:#5a7a8a;font-size:10px;text-align:center;padding:12px 0;">
+      Keine Blöcke geladen.
+    </div>
+  </div>
+</div>
+
+<!-- ORDNER-KONTROLLE -->
+<div class="box">
+  <h2>◈ ORDNER · NC-FS <span class="badge" id="fsBadge">— nicht gescannt —</span></h2>
+
+  <div id="fsList">
+    <div style="color:#5a7a8a;font-size:10px;text-align:center;padding:12px 0;">
+      Noch kein Scan. ▶ SCAN drücken.
+    </div>
+  </div>
+
+  <div class="ctrl" style="margin-top:8px;">
+    <button id="btnFsScan" class="primary">▶ SCAN</button>
+    <button id="btnFsReport" class="gold">⌨ REPORT</button>
+    <button id="btnFsMark" class="violet">✓ ROOT MARK</button>
+  </div>
+</div>
+
+<script>
+/* ────────────────────────────────────────────────────────────────
+   MONITOR · Sicht-Layer
+   flach · atomar · neutral · keine Kaskade
+   ─────────────────────────────────────────────────────────────── */
+
+console.log("◈ MONITOR · Sicht-Layer geladen");
+
+/* Dummy-BlockChain (sichtbar, aber neutral) */
+function loadBlocks(){
+  const bc=document.getElementById("blockChain");
+  bc.innerHTML="";
+  for(let i=1;i<=5;i++){
+    const b=document.createElement("div");
+    b.className="block";
+    b.textContent="Block "+i+" · sichtbar · neutral";
+    bc.appendChild(b);
+  }
+  document.getElementById("chainBadge").textContent="5 / 10";
+}
+loadBlocks();
+
+/* NC.FS · Sicht-Layer erwartet root.html als Kern */
+document.getElementById("btnFsScan").addEventListener("click",()=>{
+  alert("SCAN wird im ROOT ausgeführt.\nmonitor.html zeigt nur die Sicht.");
+});
+document.getElementById("btnFsReport").addEventListener("click",()=>{
+  alert("REPORT wird im ROOT ausgeführt.\nmonitor.html zeigt nur die Sicht.");
+});
+document.getElementById("btnFsMark").addEventListener("click",()=>{
+  alert("ROOT MARK wird im ROOT ausgeführt.\nmonitor.html zeigt nur die Sicht.");
+});
+</script>
+
+</body>
+</html>
