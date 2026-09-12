@@ -1,25 +1,20 @@
-export function evoImprove(history) {
-  const last = history[history.length - 1];
+export function evoImprove(history = []) {
+  const last = history[history.length - 1] || {};
 
-  const ghostEdit = last.respo.meta.ghost === "ghost-signal"
-    ? "Ghost: tiefer analysieren"
-    : "Ghost: normal";
-
-  const sinnTip = last.respo.meta.sinn === "7sinn-ready"
-    ? "7SINN: Mehrschichtige Antwort möglich"
-    : "7SINN: Basisantwort";
-
-  const optionCalc = {
-    complexity: last.respo.tokens.length,
-    nextOption: last.respo.tokens.length > 3
-      ? "Option: erweitern"
-      : "Option: komprimieren"
+  const dyn = {
+    bewegung: last.atom?.dir || "none",
+    anker: last.atom?.stable || false,
+    welle: last.atom?.wave || 0,
+    magnet: last.atom?.mag || 0,
+    grav: last.atom?.grav || { dir: "none", force: 0 },
+    zug: last.atom?.pull || 0,
+    abstoss: last.atom?.push || 0,
+    singular: last.atom?.singularity || false
   };
 
   return {
-    ghostEdit,
-    sinnTip,
-    optionCalc,
-    basedOn: last
+    dyn,
+    basedOn: last,
+    ready: true
   };
 }
