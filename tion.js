@@ -1,12 +1,25 @@
-// tion.js
-export function TION(level = 1) {
-  return {
-    module: "tion",
+NC.TION = {
+  mark(level = 1) {
+    return TION(level);
+  },
 
-    mana: [level * 0.75, level * 0.85, level * 0.95],   // kur
-    aura: [level * 0.90, level * 1.00, level * 1.10],   // syn
-    zen:  [level * 2.268, level * 2.500, level * 2.750], // pass
+  sensor(level = 1) {
+    const t = TION(level);
+    return {
+      ok: true,
+      mana: t.mana,
+      aura: t.aura,
+      zen: t.zen,
+      cycle: t.cycle
+    };
+  },
 
-    cycle: 81
-  };
-}
+  report(level = 1) {
+    const t = TION(level);
+    return {
+      module: "TION",
+      level,
+      ...t
+    };
+  }
+};
