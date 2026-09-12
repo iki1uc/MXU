@@ -1,5 +1,6 @@
 NC.WORK = function(px = {}) {
   return {
+    ATOM: px.atom || null,     // Quant‑Kern aus fromPX()
     OR3: OR3(px.a, px.mid, px.b),
     OR9: OR9(px.list || []),
     OR81: OR81(px.matrix || []),
