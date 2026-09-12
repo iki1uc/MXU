@@ -1,24 +1,82 @@
 // MXU_CONTENT.js
 export const MXU_CONTENT = (() => {
 
-    const templates = {
-        ATOM:  (t) => `<h1>ATOM</h1><pre>${JSON.stringify(t, null, 2)}</pre>`,
-        DOM:   (t) => `<h1>DOM</h1><pre>${JSON.stringify(t, null, 2)}</pre>`,
-        EVO:   (t) => `<h1>EVO</h1><pre>${JSON.stringify(t, null, 2)}</pre>`,
-        EOS:   (t) => `<h1>EOS</h1><pre>${JSON.stringify(t, null, 2)}</pre>`,
-        MARKT: (t) => `<h1>MARKT</h1><pre>${JSON.stringify(t, null, 2)}</pre>`,
-        BOERSE:(t) => `<h1>BOERSE</h1><pre>${JSON.stringify(t, null, 2)}</pre>`,
-        FUNK:  (t) => `<h1>FUNKTION</h1><pre>${JSON.stringify(t, null, 2)}</pre>`,
-        RESPO: (t) => `<h1>RESPO</h1><pre>${JSON.stringify(t, null, 2)}</pre>`,
-        PYRA:  (t) => `<h1>PYRAMIDE</h1><pre>${JSON.stringify(t, null, 2)}</pre>`,
-        SELF:  (t) => `<h1>SELF</h1><pre>${JSON.stringify(t, null, 2)}</pre>`,
-        TOOL:  (t) => `<h1>TOOLOMATTER</h1><pre>${JSON.stringify(t, null, 2)}</pre>`
+    // Jede Kategorie ist jetzt eine FUNKTION,
+    // die Treue-Daten verarbeitet und atomisch zurückgibt.
+    const handlers = {
+
+        ATOM:  (t) => ({
+            type: "ATOM",
+            core: t.status,
+            stamp: t.last?.[0]?.time || null
+        }),
+
+        DOM:   (t) => ({
+            type: "DOM",
+            active: t.status === "TREU",
+            nodes: t.last?.length || 0
+        }),
+
+        EVO:   (t) => ({
+            type: "EVO",
+            evolve: t.status === "STABIL",
+            history: t.last
+        }),
+
+        EOS:   (t) => ({
+            type: "EOS",
+            end: t.status === "INSTABIL",
+            reason: t.last?.slice(-1)[0] || null
+        }),
+
+        MARKT: (t) => ({
+            type: "MARKT",
+            trend: t.status,
+            moves: t.last?.length || 0
+        }),
+
+        BOERSE:(t) => ({
+            type: "BOERSE",
+            flux: t.status === "TREU",
+            delta: t.last?.length || 0
+        }),
+
+        FUNK:  (t) => ({
+            type: "FUNK",
+            signal: t.status,
+            ping: Boolean(t.last?.length)
+        }),
+
+        RESPO: (t) => ({
+            type: "RESPO",
+            response: t.status,
+            last: t.last?.slice(-1)[0] || null
+        }),
+
+        PYRA:  (t) => ({
+            type: "PYRA",
+            level: t.status,
+            stack: t.last
+        }),
+
+        SELF:  (t) => ({
+            type: "SELF",
+            identity: t.status,
+            echo: t.last?.slice(-1)[0] || null
+        }),
+
+        TOOL:  (t) => ({
+            type: "TOOL",
+            usable: t.status !== "INSTABIL",
+            meta: t.last
+        })
     };
 
+    // FUNKTION statt Template
     function render(name, treue) {
-        const tpl = templates[name];
-        if (!tpl) return `<h1>${name}</h1><p>Kein Template</p>`;
-        return tpl(treue);
+        const fn = handlers[name];
+        if (!fn) return { type: name, error: "Kein Handler" };
+        return fn(treue);
     }
 
     return { render };
