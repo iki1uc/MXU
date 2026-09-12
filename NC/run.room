@@ -1,20 +1,49 @@
-
-// NC/run.room — führt einen Raum aus
+// NC/run.room — führt einen Raum aus (MXU-Engine)
 
 import { NC } from "./index.js";
+import { NC_LAYERS } from "./core/nc.layers.js";
+import { NC_TOKENS } from "./core/nc.tokens.js";
 
 export function NC_runRoom(px, meta) {
+
+    // NC-Engine starten
     const nc = NC(px, meta);
+
+    // Cylinder-Stationen oben ↕ unten
+    const cylinder = {
+        top: ["uc", "HÄ", "Q1", "Q2"],
+        core: ["NC", "in4", "run4", "u4", "me4", "me2", "in2"],
+        bottom: ["ÄH", "Q3", "Q4", "iki"]
+    };
+
+    // Layer-Liste extrahieren
+    const layers = Object.entries(NC_LAYERS.map).map(([name, value]) => ({
+        name,
+        layer: value
+    }));
+
+    // Token-Berechnung (KlicK(((( ))))ZaM(((( )))))
+    const token = {
+        raw: nc.raw,
+        xyx: nc.tokens?.xyx ?? null,
+        marker: nc.tokens?.marker ?? null,
+        total: nc.tokens?.total ?? null
+    };
 
     return {
         type: "NC-run",
         time: Date.now(),
+
         executed: {
             raw: nc.raw,
-            tokens: nc.tokens,
+            tokens: token,
             meta: nc.metaBlock,
             evo: nc.evo
         },
+
+        cylinder,
+        layers,
+
         info: "NC_runRoom → Raum erfolgreich ausgeführt"
     };
 }
