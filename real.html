@@ -39,9 +39,7 @@
   }
   button.primary { background:#4cc9f0; color:#000; }
   button.gold { background:#f0d080; color:#000; }
-  button.violet { background:#b388ff; color:#000; }
 
-  /* Mystery-Layer Output */
   #realList {
     display:flex;flex-direction:column;gap:4px;
     font-size:10px;
@@ -78,14 +76,8 @@
 </div>
 
 <script>
-/* ────────────────────────────────────────────────────────────────
-   REAL · Mystery-Layer
-   flach · atomar · neutral · keine Kaskade · keine Reparatur
-   ─────────────────────────────────────────────────────────────── */
-
 console.log("◈ REAL · Mystery-Layer geladen");
 
-/* Dateien + Marker */
 const REAL = {
   EXPECTED: [
     { path:"nc.js", marker:"NC." },
@@ -131,7 +123,6 @@ const REAL = {
   }
 };
 
-/* UI Rendering */
 function renderReal(list){
   const el=document.getElementById("realList");
   el.innerHTML="";
@@ -153,7 +144,6 @@ function updateBadge(list){
   b.textContent=`${ok} OK · ${bad} BAD`;
 }
 
-/* Buttons */
 document.getElementById("btnRealScan").addEventListener("click",()=>REAL.scan());
 document.getElementById("btnRealReport").addEventListener("click",()=>{
   console.table(REAL.state.report);
