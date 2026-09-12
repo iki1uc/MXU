@@ -1,0 +1,8 @@
+NC.WORK = function(px = {}) {
+  return {
+    OR3: OR3(px.a, px.mid, px.b),
+    OR9: OR9(px.list || []),
+    OR81: OR81(px.matrix || []),
+    ok: true
+  };
+};
