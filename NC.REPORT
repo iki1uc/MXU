@@ -1,0 +1,6 @@
+NC.REPORT = function(px = {}) {
+  return {
+    ATOM: px.atom || null,
+    ok: true
+  };
+};
