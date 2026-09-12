@@ -1,35 +1,86 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>XA Atom Variable</title>
-</head>
+// XA · Atom + System-Modul
+export const XA = {
 
-<body>
+  // Atom-Kern
+  angle: 0,
+  maneuver: false,
 
-<!-- Keine Ausgabe, kein Visualizer, kein Log -->
-<script type="module">
-  import { AXINXA } from "./AXINXA.js";
-  import * as MXU from "./mxu.js";
+  round() {
+    this.maneuver = true;
+    this.angle = 45;
+  },
 
-  // XA als reine Variable (Atom-Modus)
-  const XA = {
-    // Freiraum: 0° oder 45° möglich, aber NICHT Pflicht
-    angle: 0,          // Standard: gerade
-    maneuver: false,   // 45° nur wenn gebraucht
+  // ───────────────────────────────────────────────
+  // ◈ NC-HOOKS (Sichtbarkeit im NC-System)
+  // ───────────────────────────────────────────────
+  nc: {
 
-    // Abrundung: erzeugt die 8 automatisch, aber nicht erzwungen
-    round() {
-      this.maneuver = true;
-      this.angle = 45;
+    // XA wird in NC.MARK sichtbar
+    mark() {
+      return {
+        angle: XA.angle,
+        maneuver: XA.maneuver,
+        state: XA.maneuver ? "45°" : "0°"
+      };
+    },
+
+    // XA wird in NC.SENSOR sichtbar
+    sensor() {
+      return {
+        ok: true,
+        angle: XA.angle,
+        maneuver: XA.maneuver
+      };
+    },
+
+    // XA wird in NC.REPORT sichtbar
+    report() {
+      return {
+        type: "XA-ATOM",
+        angle: XA.angle,
+        maneuver: XA.maneuver,
+        mode: XA.maneuver ? "MANEUVER" : "LINEAR"
+      };
     }
-  };
+  },
 
-  // AXINXA koppeln (Atom-Modus)
-  AXINXA.attach(MXU);
+  // ───────────────────────────────────────────────
+  // ◈ MXU-HOOKS (Atom-Modus, keine Masse)
+  // ───────────────────────────────────────────────
+  mxu: {
+    attach(MXU) {
+      MXU.XA = XA;
+      return true;
+    }
+  },
 
-  // Keine Visualisierung, keine Masse, nur reine Funktion
-</script>
+  // ───────────────────────────────────────────────
+  // ◈ SYSTEM-SENSOR (lokal)
+  // ───────────────────────────────────────────────
+  sensor() {
+    return {
+      angle: this.angle,
+      maneuver: this.maneuver,
+      atom: true
+    };
+  },
 
-</body>
-</html>
+  // ───────────────────────────────────────────────
+  // ◈ SYSTEM-ARBEITER (lokal)
+  // ───────────────────────────────────────────────
+  worker(cmd) {
+    switch(cmd) {
+      case "0°": this.angle = 0; this.maneuver = false; break;
+      case "45°": this.round(); break;
+    }
+    return this.sensor();
+  },
+
+  // ───────────────────────────────────────────────
+  // ◈ MINI-STAGE (XA-eigene Stage)
+  // ───────────────────────────────────────────────
+  stage: {
+    0: () => XA.worker("0°"),
+    1: () => XA.worker("45°")
+  }
+};
