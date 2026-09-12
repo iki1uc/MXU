@@ -1,4 +1,4 @@
-export function IS_state() {
+export function IS_state(extra = {}) {
     console.log("IS → state()");
 
     return {
@@ -7,6 +7,17 @@ export function IS_state() {
         status: "OK",
         level: 2,
         timestamp: Date.now(),
-        info: "IS → State-Move erfolgreich ausgeführt"
+
+        // ursprüngliche Info bleibt
+        info: "IS → State-Move erfolgreich ausgeführt",
+
+        // neue leichte Fähigkeiten
+        mode: "state",
+        stable: true,
+        axis: "X",
+        impulse: 1,
+
+        // NC-Regel: optionaler Zusatz
+        ...extra
     };
 }
