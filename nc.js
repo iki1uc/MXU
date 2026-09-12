@@ -1,18 +1,9 @@
-export function OR(a, b) {
-
-    const lane = {
-        from: a,
-        to: b,
-        impulse: a.impulse || 0,
-        dir: a.dir || "none",
-        atom: a.atom || null
-    };
-
-    return {
-        in: a,
-        out: b,
-        lane,
-        switch: true,
-        mode: "or"
-    };
+export function OR3(a, mid, b) {
+  return { in: a, mid, out: b, mode: "or3" };
+}
+export function OR9(list) {
+  return { points: list, mode: "or9" };
+}
+export function OR81(matrix) {
+  return { cycle: matrix, mode: "or81" };
 }
