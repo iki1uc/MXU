@@ -1,9 +1,24 @@
 NC.WORK = function(px = {}) {
+  const atom = px.atom || null;
+
   return {
-    ATOM: px.atom || null,     // Quant‑Kern aus fromPX()
+    ATOM: atom,
+
+    // OR‑Module
     OR3: OR3(px.a, px.mid, px.b),
     OR9: OR9(px.list || []),
-    OR81: OR81(px.matrix || []),
+    OR81: OR81(px.matrix || (atom ? atom.cycle : [])),
+
+    // ATOM‑Eigenschaften
+    entropy: atom?.entropy || 0,
+    spin: atom?.spin || 0,
+    charge: atom?.charge || 0,
+    symmetry: atom?.symmetry || 0,
+    coherence: atom?.coherence || false,
+
+    // Mode‑Routing
+    mode: atom ? "mode6" : "pure",
+
     ok: true
   };
 };
