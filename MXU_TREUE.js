@@ -1,44 +1,20 @@
-export const MXU_TREUE = (() => {
+function getStatus(px, meta, axis, nc, opts = {}) {
 
-    const history = [];
+    // Basis‑Zustände
+    if (!px) return "ready";
+    if (!meta) return "logikal";
+    if (!axis) return ")3(())9(";
+    if (!nc) return "mind";
 
-    function getStatus(px, meta, axis, nc) {
-        if (!px) return "INSTABIL";
-        if (!meta) return "INSTABIL";
-        if (!axis) return "NEUTRAL";
-        if (!nc) return "NEUTRAL";
-        return "TREU";
-    }
+    // Optionen (PX‑9‑Modus)
+    const { pc, inOpt, outOpt, bund, verbund } = opts;
 
-    function accept(packet = {}) {
+    if (pc?.atom)      return "()sli.readdy() MODE1+mode0";
+    if (px?.atom)      return "MODE2";
+    if (inOpt?.atom)   return "MODE3";
+    if (outOpt?.atom)  return "MODE3";
+    if (bund?.atom)    return "MODE4";
+    if (verbund?.atom) return "MODE5";
 
-        const entry = {
-            time: Date.now(),
-            input: packet.input || "",
-            px: packet.px || null,
-            meta: packet.meta || null,
-            axis: packet.axis || null,
-            nc: packet.nc || null
-        };
-
-        entry.status = getStatus(entry.px, entry.meta, entry.axis, entry.nc);
-
-        history.push(entry);
-
-        return entry;
-    }
-
-    function getTreue() {
-        const last = history.slice(-1)[0];
-        return {
-            status: last?.status || "INSTABIL",
-            last: history.slice(-10)
-        };
-    }
-
-    return {
-        accept,
-        getTreue
-    };
-
-})();
+    return "TRue";
+}
