@@ -2,22 +2,66 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>PX Console</title>
+  <title>PX Console 4-Form</title>
+  <style>
+    .diamond {
+      display: grid;
+      grid-template-areas:
+        ". north ."
+        "west con east"
+        ". south .";
+      gap: 10px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    #north { grid-area: north; }
+    #east  { grid-area: east; }
+    #south { grid-area: south; }
+    #west  { grid-area: west; }
+    #con   { grid-area: con; font-weight: bold; }
+  </style>
 </head>
 
 <body>
 
-<h1>PX Console</h1>
-<input id="txt" placeholder="PX Input">
-<button id="run">RUN PX</button>
+<h1>PX Console – Diamant</h1>
+
+<div class="diamond">
+  <input id="north" placeholder="PX N (d/e/i)">
+  <input id="east"  placeholder="PX E (n/o/r)">
+  <div id="con">con()</div>
+  <input id="west"  placeholder="PX W (s/u/w)">
+  <input id="south" placeholder="PX S (atom)">
+</div>
+
+<button id="run">RUN PX4</button>
 <pre id="out"></pre>
 
 <script type="module">
   import { fromPX } from "./mxu.js";
 
+  function Klick(v) {
+    return { impulse: 1, atom: v, dir: v };
+  }
+
+  function ZaM(a, b) {
+    return { pair: [a.atom, b.atom], impulse: a.impulse + b.impulse };
+  }
+
   document.getElementById("run").addEventListener("click", async () => {
-    const msg = document.getElementById("txt").value || "PX TEST";
-    const out = await fromPX({ msg });
+    const N = Klick(document.getElementById("north").value);
+    const E = Klick(document.getElementById("east").value);
+    const S = Klick(document.getElementById("south").value);
+    const W = Klick(document.getElementById("west").value);
+
+    const con = ZaM(N, S);
+
+    const out = await fromPX({
+      msg: "PX4",
+      atomar: { N, E, S, W },
+      con
+    });
+
     document.getElementById("out").textContent =
       JSON.stringify(out, null, 2);
   });
@@ -25,4 +69,3 @@
 
 </body>
 </html>
-
