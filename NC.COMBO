@@ -1,11 +1,11 @@
 NC.COMBO = {
-  C1: { name:"BOOT",   seq:["INIT","FS","SENSOR","LIVE"] },
-  C2: { name:"SCAN",   seq:["FS","SENSOR"] },
-  C3: { name:"DEEP",   seq:["FS","MARK","SENSOR"] },
-  C4: { name:"FOLD",   seq:["FOLD","SENSOR"] },
-  C5: { name:"SYNC",   seq:["SYNC","SENSOR","LIVE"] },
-  C6: { name:"RETURN", seq:["RETURN","SENSOR"] },
-  C7: { name:"HOLD",   seq:["SYNC","RETURN","SENSOR"] },
-  C8: { name:"FULL",   seq:["INIT","FS","MARK","FOLD","SYNC","SENSOR","RETURN","LIVE"] },
-  C9: { name:"META",   seq:["REPORT"] }
+  C1: { name:"BOOT",   seq:["INIT","FS","SENSOR","LIVE"],   run:3,  mode:"pure" },
+  C2: { name:"SCAN",   seq:["FS","SENSOR"],                 run:3,  mode:"pure" },
+  C3: { name:"DEEP",   seq:["FS","MARK","SENSOR"],          run:21, mode:"extended" },
+  C4: { name:"FOLD",   seq:["FOLD","SENSOR"],               run:21, mode:"extended" },
+  C5: { name:"SYNC",   seq:["SYNC","SENSOR","LIVE"],        run:21, mode:"extended" },
+  C6: { name:"RETURN", seq:["RETURN","SENSOR"],             run:3,  mode:"pure" },
+  C7: { name:"HOLD",   seq:["SYNC","RETURN","SENSOR"],      run:21, mode:"extended" },
+  C8: { name:"FULL",   seq:["INIT","FS","MARK","FOLD","SYNC","SENSOR","RETURN","LIVE"], run:21, mode:"mode6" },
+  C9: { name:"META",   seq:["REPORT"],                      run:21, mode:"mode6" }
 };
