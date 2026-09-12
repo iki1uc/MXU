@@ -1,7 +1,11 @@
 NC.AROUND = function(px = {}) {
+  const atom = px.atom || null;
+
   return {
-    cycle: OR81(px.matrix || []),
+    ATOM: atom,
+    cycle: OR81(px.matrix || (atom ? atom.cycle : [])),
     seq: px.seq || [],
+    mode: atom ? "mode6" : "pure",
     ok: true
   };
 };
