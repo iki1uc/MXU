@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>REAL · Mystery-Layer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  body {
+    background:#0a0d11;
+    color:#c8d0d8;
+    font-family:Arial, sans-serif;
+    margin:0; padding:20px;
+  }
+  h1 { font-size:20px; margin-bottom:10px; }
+
+  .box {
+    background:#11161c;
+    padding:16px;
+    border-radius:6px;
+    margin-bottom:20px;
+    border:1px solid #1f2a33;
+  }
+
+  .badge {
+    font-size:10px;
+    opacity:0.8;
+    padding:2px 6px;
+    background:#222;
+    border-radius:4px;
+  }
+
+  button {
+    padding:6px 10px;
+    font-size:11px;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+  }
+  button.primary { background:#4cc9f0; color:#000; }
+  button.gold { background:#f0d080; color:#000; }
+  button.violet { background:#b388ff; color:#000; }
+
+  /* Mystery-Layer Output */
+  #realList {
+    display:flex;flex-direction:column;gap:4px;
+    font-size:10px;
+    max-height:360px;overflow-y:auto;
+  }
+  .real-row {
+    background:#151a20;
+    padding:8px;
+    border-radius:4px;
+    border-left:3px solid #4cc9f0;
+  }
+  .real-row.bad { border-left-color:#ff6666; }
+  .real-row.ok { border-left-color:#8cf0d0; }
+</style>
+</head>
+
+<body>
+
+<h1>REAL · Mystery-Layer</h1>
+
+<div class="box">
+  <h2>◈ REAL-SCAN <span class="badge" id="realBadge">— nicht geprüft —</span></h2>
+
+  <div id="realList">
+    <div style="color:#5a7a8a;font-size:10px;text-align:center;padding:12px 0;">
+      Noch kein Mystery-Scan. ▶ SCAN drücken.
+    </div>
+  </div>
+
+  <div class="ctrl" style="margin-top:8px;">
+    <button id="btnRealScan" class="primary">▶ SCAN</button>
+    <button id="btnRealReport" class="gold">⌨ REPORT</button>
+  </div>
+</div>
+
+<script>
+/* ────────────────────────────────────────────────────────────────
+   REAL · Mystery-Layer
+   flach · atomar · neutral · keine Kaskade · keine Reparatur
+   ─────────────────────────────────────────────────────────────── */
+
+console.log("◈ REAL · Mystery-Layer geladen");
+
+/* Dateien + Marker */
+const REAL = {
+  EXPECTED: [
+    { path:"nc.js", marker:"NC." },
+    { path:"nc.evo.js", marker:"NC.EVO" },
+    { path:"mxu.js", marker:"MXU." },
+    { path:"MXU_layers.js", marker:"LAYERS:" },
+    { path:"AXINXA.js", marker:"AXINXA" },
+    { path:"index.html", marker:"<html" },
+    { path:"README.md", marker:"#"},
+  ],
+
+  state: { report:[], lastRun:0 },
+
+  async scan(){
+    const out=[];
+    for(const e of REAL.EXPECTED){
+      let exists=false;
+      let content="";
+      try{
+        const r=await fetch(e.path);
+        exists=r.ok;
+        if(r.ok) content=await r.text();
+      }catch{}
+
+      const hasMarker = exists && content.includes(e.marker);
+
+      out.push({
+        path:e.path,
+        exists,
+        marker:e.marker,
+        hasMarker,
+        status: exists
+          ? (hasMarker ? "OK" : "MARKER-FEHLT")
+          : "FEHLT"
+      });
+    }
+
+    REAL.state.report=out;
+    REAL.state.lastRun=Date.now();
+    renderReal(out);
+    updateBadge(out);
+    return out;
+  }
+};
+
+/* UI Rendering */
+function renderReal(list){
+  const el=document.getElementById("realList");
+  el.innerHTML="";
+  list.forEach(e=>{
+    const row=document.createElement("div");
+    row.className="real-row "+(e.status==="OK"?"ok":"bad");
+    row.innerHTML=
+      `<b>${e.path}</b><br>`+
+      `Status: ${e.status}<br>`+
+      `Marker: ${e.marker}`;
+    el.appendChild(row);
+  });
+}
+
+function updateBadge(list){
+  const b=document.getElementById("realBadge");
+  const ok=list.filter(e=>e.status==="OK").length;
+  const bad=list.length-ok;
+  b.textContent=`${ok} OK · ${bad} BAD`;
+}
+
+/* Buttons */
+document.getElementById("btnRealScan").addEventListener("click",()=>REAL.scan());
+document.getElementById("btnRealReport").addEventListener("click",()=>{
+  console.table(REAL.state.report);
+});
+</script>
+
+</body>
+</html>
