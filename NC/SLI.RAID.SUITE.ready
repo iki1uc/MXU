@@ -1,0 +1,43 @@
+// NC/suite.token — Suite Token Engine (MXU)
+
+import { NC } from "./index.js";
+import { NC_TOKENS } from "./core/nc.tokens.js";
+
+export function NC_suiteToken(suite) {
+
+    // Suite = Array aus 3 Räumen
+    const results = suite.map(room => {
+        const nc = NC(room.px, room.meta);
+
+        // Token-Regel extrahieren
+        const token = {
+            raw: nc.raw,
+            xyx: nc.tokens?.xyx ?? 0,
+            marker: nc.tokens?.marker ?? 0,
+            total: nc.tokens?.total ?? 0
+        };
+
+        return {
+            px: room.px,
+            meta: room.meta,
+            token,
+            evo: nc.evo
+        };
+    });
+
+    // Suite-Synchronisierung (MAXI)
+    const suiteToken = {
+        raw: results.reduce((a, b) => a + b.token.raw, 0),
+        xyx: results.reduce((a, b) => a + b.token.xyx, 0),
+        marker: results.reduce((a, b) => a + b.token.marker, 0),
+        total: results.reduce((a, b) => a + b.token.total, 0)
+    };
+
+    return {
+        type: "NC-suite-token",
+        time: Date.now(),
+        rooms: results,
+        suiteToken,
+        info: "Suite Token Engine → erfolgreich synchronisiert"
+    };
+}
