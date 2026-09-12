@@ -1,0 +1,7 @@
+NC.AROUND = function(px = {}) {
+  return {
+    ATOM: px.atom || null,
+    cycle: OR81(px.matrix || []),
+    ok: true
+  };
+};
