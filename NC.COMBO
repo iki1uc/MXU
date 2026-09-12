@@ -1,0 +1,11 @@
+NC.COMBO = {
+  C1: { name:"BOOT",   seq:["INIT","FS","SENSOR","LIVE"] },
+  C2: { name:"SCAN",   seq:["FS","SENSOR"] },
+  C3: { name:"DEEP",   seq:["FS","MARK","SENSOR"] },
+  C4: { name:"FOLD",   seq:["FOLD","SENSOR"] },
+  C5: { name:"SYNC",   seq:["SYNC","SENSOR","LIVE"] },
+  C6: { name:"RETURN", seq:["RETURN","SENSOR"] },
+  C7: { name:"HOLD",   seq:["SYNC","RETURN","SENSOR"] },
+  C8: { name:"FULL",   seq:["INIT","FS","MARK","FOLD","SYNC","SENSOR","RETURN","LIVE"] },
+  C9: { name:"META",   seq:["REPORT"] }
+};
