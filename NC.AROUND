@@ -1,7 +1,26 @@
 NC.AROUND = function(px = {}) {
+  const atom = px.atom || null;
+
   return {
-    ATOM: px.atom || null,
-    cycle: OR81(px.matrix || []),
+    // ATOM‑Kern
+    ATOM: atom,
+
+    // OR81‑Cycle (Matrix oder atom.cycle)
+    cycle: OR81(px.matrix || (atom ? atom.cycle : [])),
+
+    // Sequenz / Ablauf
+    seq: px.seq || [],
+
+    // Beam/Gate‑Status
+    beam: px.beam || null,
+    gate: px.gate || null,
+
+    // Mode‑Routing
+    mode: atom ? "mode6" : "pure",
+
+    // RUN‑Routing
+    run: atom ? 21 : 3,
+
     ok: true
   };
 };
